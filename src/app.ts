@@ -1,14 +1,17 @@
 import { envs } from "./config";
+import { AppRoutes } from "./presentation/routes";
 import { Server } from "./presentation/server";
 
 (() => {
-    main();
+  main();
 })();
 
-async function  main() {
-   // TODO: Await for database connection 
+async function main() {
+  // TODO: Await for database connection
 
-   new Server({
-        port: envs.PORT,
-   }).start();    
+  // Start the server
+  new Server({
+    port: envs.PORT,
+    routes: AppRoutes.routes,
+  }).start();
 }
