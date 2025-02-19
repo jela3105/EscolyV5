@@ -6,7 +6,6 @@ export class AuthController {
   constructor(private readonly authRepository: AuthRepository) {}
 
   registerUser = async (req: Request, res: Response) => {
-    console.log("registerUser controller");
     const [error, registeruserDTO] = RegisterUserDTO.create(req.body);
 
     if (error) {

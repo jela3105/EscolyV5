@@ -1,4 +1,5 @@
 import { envs } from "./config";
+import { MysqlDatabase } from "./data/mysql";
 import { AppRoutes } from "./presentation/routes";
 import { Server } from "./presentation/server";
 
@@ -7,7 +8,6 @@ import { Server } from "./presentation/server";
 })();
 
 async function main() {
-  // TODO: Await for database connection
 
   // Start the server
   new Server({
