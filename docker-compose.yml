@@ -10,6 +10,25 @@ services:
     ports:
       - $MYSQL_PORT:$MYSQL_DOCKER_PORT
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  escoly-app:
+    build: .
+    env_file: ./.env
+    container_name: escoly-app
+    depends_on:
+      - escoly-mysql-db
+    ports:
+      - "$PORT:$PORT"
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: npm run dev # Change this if you use another start command
+    environment:
+      MYSQL_HOST: escoly-mysql
+      MYSQL_PORT: $MYSQL_PORT
+      MYSQL_DATABASE: $MYSQL_DATABASE
 volumes:
-  mysql:
+  mysql_data:
+    name: mysql_data 
