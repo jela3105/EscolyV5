@@ -138,3 +138,6 @@ init.sql
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# others
+devnotes.txt

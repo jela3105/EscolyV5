@@ -2,22 +2,42 @@ import { Validators } from "../../../config";
 
 export class RegisterUserDTO {
   private constructor(
-    public name: string,
+    public names: string,
+    public fathersLastName: string,
+    public mothersLastName: string,
     public email: string,
+    public role: number,
     public password: string
   ) {}
 
   static create(object: { [key: string]: any }): [string?, RegisterUserDTO?] {
-    const { name, email, password } = object;
+    const {
+      names,
+      fathersLastName,
+      mothersLastName,
+      email,
+      role = 3,
+      password,
+    } = object;
 
-    if (!name) return ["Missing name"];
+    if (!names) return ["Missing names"];
+    if (!fathersLastName) return ["Missing fathers last name"];
+    if (!mothersLastName) return ["Missing mothers last name"];
     if (!email) return ["Missing email"];
     if (!Validators.email.test(email)) return ["Invalid email"];
     if (!password) return ["Missing password"];
     if (password.lenght < 6) return ["Password too short"];
 
     return [
-      undefined, new RegisterUserDTO(name, email.toLowerCase(), password)
+      undefined,
+      new RegisterUserDTO(
+        names,
+        fathersLastName,
+        mothersLastName,
+        email.toLowerCase(),
+        role,
+        password
+      ),
     ];
   }
 }
