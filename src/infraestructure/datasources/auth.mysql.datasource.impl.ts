@@ -8,24 +8,17 @@ import {
 
 export class AuthMysqlDatasourceImpl implements AuthDataSource {
   async register(registerUserDTO: RegisterUserDTO): Promise<UserEntity> {
-    const { name, email = "h@.h.com", password } = registerUserDTO;
-
-    console.log("email" + email);
+    const { name, email, password } = registerUserDTO;
 
     try {
-      const pool = await MysqlDatabase.createPool();
+      const pool = await MysqlDatabase.getPoolInstance();
 
       // Verify if user already exists
-      pool.query(
-        "SELECT * FROM User WHERE email = ?",
-        [email],
-        (err, results) => {
-          console.log(results);
-          if (results) throw CustomError.badRequest("User already exists");
-          throw err;
-        }
-      );
+      const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE email = ?", [email]);
 
+      if(rows.length > 0) {
+        throw CustomError.conflict("User already exists");
+      }
       // Password hash
 
       // Map answer to UserEntity
