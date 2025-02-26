@@ -24,11 +24,7 @@ services:
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app
-    command: ["sh", "-c", "if [ \"$NODE_ENV\" = \"dev\" ]; then npm run start dev; else npm run start; fi"] 
-    environment:
-      MYSQL_HOST: escoly-mysql
-      MYSQL_PORT: $MYSQL_PORT
-      MYSQL_DATABASE: $MYSQL_DATABASE
+    command: ["sh", "-c", "npm install && if [ \"$NODE_ENV\" = \"dev\" ]; then npm run dev; else npm run start; fi"] 
 volumes:
   mysql_data:
     name: mysql_data 
