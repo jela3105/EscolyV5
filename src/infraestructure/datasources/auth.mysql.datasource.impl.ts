@@ -6,6 +6,7 @@ import {
   RegisterUserDTO,
   UserEntity,
 } from "../../domain";
+import { UserEntityMapper } from "../mappers/user.mapper";
 
 type HashFunction = (password: string) => string;
 type CompareFunction = (password: string, hashed: string) => boolean;
@@ -33,24 +34,26 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
         throw CustomError.conflict("User already exists");
       }
 
-      // Password hash
-
       // Insert user
-      const [result] = await pool.execute(
+      const [insertionResult] = await pool.execute(
         "INSERT INTO User (roleId, names, fathersLastName, mothersLastName, email, password) VALUES (?, ?, ?, ?, ?, ?)",
-        [role, names, fathersLastName, mothersLastName, email, this.hashFunction(password)]
+        [
+          role,
+          names,
+          fathersLastName,
+          mothersLastName,
+          email,
+          this.hashFunction(password),
+        ]
       );
 
-      // TODO: Create mapper to UserEntity
-      return new UserEntity(
-        1,
-        role,
-        names,
-        fathersLastName,
-        mothersLastName,
-        email,
-        "token"
+      const [userInserted] = await pool.query(
+        "SELECT * FROM User WHERE email = ?",
+        [email]
       );
+
+      // TODO: validate mapper
+      return UserEntityMapper.userEntityFromObject(userInserted);
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

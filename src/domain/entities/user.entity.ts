@@ -3,9 +3,10 @@ export class UserEntity {
     public userId: number,
     public roleId: number,
     public names: string,
-    public mothersLastName: string,
     public fathersLastName: string,
+    public mothersLastName: string,
     public email: string,
+    public password: string,
     public token: string
   ) {}
 }
