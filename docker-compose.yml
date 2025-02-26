@@ -24,7 +24,7 @@ services:
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app
-    command: npm run dev # Change this if you use another start command
+    command: ["sh", "-c", "if [ \"$NODE_ENV\" = \"dev\" ]; then npm run start dev; else npm run start; fi"] 
     environment:
       MYSQL_HOST: escoly-mysql
       MYSQL_PORT: $MYSQL_PORT
