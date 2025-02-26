@@ -21,6 +21,7 @@ MYSQL_PORT=3306
 MYSQL_USER=root
 MYSQL_PASSWORD=root
 MYSQL_DATABASE=Escoly
+NODE_ENV=dev
 ```
 
 ### 3. Load the init.sql script for database
