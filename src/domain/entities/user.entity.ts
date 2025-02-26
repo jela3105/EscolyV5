@@ -6,7 +6,6 @@ export class UserEntity {
     public mothersLastName: string,
     public fathersLastName: string,
     public email: string,
-    public password: string,
     public token: string
   ) {}
 }

@@ -9,6 +9,8 @@ import { Server } from "./presentation/server";
 
 async function main() {
 
+  await MysqlDatabase.getPoolInstance();
+
   // Start the server
   new Server({
     port: envs.PORT,

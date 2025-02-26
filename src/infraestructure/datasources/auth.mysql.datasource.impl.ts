@@ -7,12 +7,18 @@ import {
   UserEntity,
 } from "../../domain";
 
+type HashFunction = (password: string) => string;
+type CompareFunction = (password: string, hashed: string) => boolean;
+
 export class AuthMysqlDatasourceImpl implements AuthDataSource {
+  constructor(
+    private readonly hashFunction: HashFunction,
+    private readonly compareFunction: CompareFunction
+  ) {}
+
   async register(registerUserDTO: RegisterUserDTO): Promise<UserEntity> {
     const { role, names, fathersLastName, mothersLastName, email, password } =
       registerUserDTO;
-
-    console.log(registerUserDTO);
 
     try {
       const pool = await MysqlDatabase.getPoolInstance();
@@ -30,23 +36,19 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       // Password hash
 
       // Insert user
-      console.log("Inserting user");
       const [result] = await pool.execute(
         "INSERT INTO User (roleId, names, fathersLastName, mothersLastName, email, password) VALUES (?, ?, ?, ?, ?, ?)",
-        [role, names, fathersLastName, mothersLastName, email, password]
+        [role, names, fathersLastName, mothersLastName, email, this.hashFunction(password)]
       );
 
-      console.log(result);
-
-      // Map answer to UserEntity
+      // TODO: Create mapper to UserEntity
       return new UserEntity(
         1,
-        1,
-        "Diego",
-        "Rivera",
-        "Corona",
-        "dr@g.com",
-        "password",
+        role,
+        names,
+        fathersLastName,
+        mothersLastName,
+        email,
         "token"
       );
     } catch (error) {

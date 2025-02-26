@@ -1,13 +1,19 @@
 import { Router } from "express";
 import { AuthController } from "./controller";
-import { AuthMysqlDatasourceImpl , AuthRepositoryImpl } from "../../infraestructure";
+import {
+  AuthMysqlDatasourceImpl,
+  AuthRepositoryImpl,
+} from "../../infraestructure";
+import { BcryptAdapter } from "../../config";
 
 export class AuthRoutes {
   static get routes(): Router {
-
     const router = Router();
 
-    const database = new AuthMysqlDatasourceImpl();
+    const database = new AuthMysqlDatasourceImpl(
+      BcryptAdapter.hash,
+      BcryptAdapter.compare
+    );
     const authRepository = new AuthRepositoryImpl(database);
     const authController = new AuthController(authRepository);
 
