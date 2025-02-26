@@ -16,7 +16,7 @@ export class RegisterUserDTO {
       fathersLastName,
       mothersLastName,
       email,
-      role = 3,
+      role = 1,
       password,
     } = object;
 

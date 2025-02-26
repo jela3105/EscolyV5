@@ -40,3 +40,8 @@ docker-compose up
 
 - Log in direcly as root in mysql:
 `docker exec -it <container_name_or_id> mysql -u root -p`
+
+## **Notes for development with poOs!**
+
+- Be able to remove the mysql volume
+`sudo chown -R $USER <directory>`

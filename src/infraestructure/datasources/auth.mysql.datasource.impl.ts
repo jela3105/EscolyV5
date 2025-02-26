@@ -30,12 +30,12 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
         [email]
       );
 
-      if (rows.length > 0) {
+      if (rows.length != 0) {
         throw CustomError.conflict("User already exists");
       }
 
       // Insert user
-      const [insertionResult] = await pool.execute(
+      await pool.execute(
         "INSERT INTO User (roleId, names, fathersLastName, mothersLastName, email, password) VALUES (?, ?, ?, ?, ?, ?)",
         [
           role,
@@ -47,13 +47,12 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
         ]
       );
 
-      const [userInserted] = await pool.query(
+      const [userInserted]: [any[], any] = await pool.query(
         "SELECT * FROM User WHERE email = ?",
         [email]
       );
-
       // TODO: validate mapper
-      return UserEntityMapper.userEntityFromObject(userInserted);
+      return UserEntityMapper.userEntityFromObject(userInserted[0]);
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

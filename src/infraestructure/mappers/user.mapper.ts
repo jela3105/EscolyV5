@@ -5,7 +5,7 @@ export class UserEntityMapper {
 
         const {userId, id, roleId, names, fathersLastName, mothersLastName, email, password, token } = object;
 
-        if( !userId || !id){
+        if( !userId && !id ){
             throw CustomError.badRequest('Missing id');
         }
 
