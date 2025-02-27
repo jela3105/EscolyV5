@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { RegisterUserDTO } from "../../domain/dtos/auth/register-user.dto";
 import { AuthRepository, CustomError } from "../../domain";
+import { JwtAdapter } from "../../config";
 
 export class AuthController {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -8,7 +9,7 @@ export class AuthController {
   private handleError = (error: unknown, res: Response) => {
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({ error: error.message });
-    } 
+    }
 
     console.log(error);
     return res.status(500).json({ error: "Internal server error" });
@@ -24,8 +25,13 @@ export class AuthController {
 
     this.authRepository
       .register(registeruserDTO!)
-      .then((user) => res.json(user))
-      .catch((error) => this.handleError(error, res));  
+      .then(async (user) => {
+        res.json({
+          user,
+          token: await JwtAdapter.generateToken({ email: user.email }),
+        });
+      })
+      .catch((error) => this.handleError(error, res));
   };
 
   loginUser = async (req: Request, res: Response) => {
