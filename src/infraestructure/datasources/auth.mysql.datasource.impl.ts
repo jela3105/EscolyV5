@@ -5,6 +5,7 @@ import {
   RegisterUserDTO,
   UserEntity,
 } from "../../domain";
+import { LoginUserDTO } from "../../domain/dtos/auth/login-user.dto";
 import { UserEntityMapper } from "../mappers/user.mapper";
 
 type HashFunction = (password: string) => string;
@@ -16,6 +17,49 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
     private readonly hashFunction: HashFunction,
     private readonly compareFunction: CompareFunction
   ) { }
+
+  async getUsers(): Promise<UserEntity[]> {
+
+    try {
+      const pool = await MysqlDatabase.getPoolInstance();
+      const [rows]: [any[], any] = await pool.query("SELECT * FROM User");
+
+      return rows.map((user) => UserEntityMapper.userEntityFromObject(user));
+    } catch (error) {
+      console.log(error);
+      throw HttpError.internalServerError();
+    }
+  }
+
+  async login(loginUserDTO: LoginUserDTO): Promise<UserEntity> {
+    
+    const { email, password } = loginUserDTO;
+
+    try {
+      const pool = await MysqlDatabase.getPoolInstance();
+      const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE email = ?", [email]);
+
+      if (rows.length == 0) {
+        throw HttpError.unauthorized("User not found");
+      }
+
+      const user = rows[0];
+
+      if (!this.compareFunction(password, user.password)) {
+        throw HttpError.unauthorized("Password or email incorrect");
+      }
+
+      return UserEntityMapper.userEntityFromObject(user);
+    } catch (error) {
+
+      if (error instanceof HttpError) {
+        throw error;
+      }
+
+      console.log(error);
+      throw HttpError.internalServerError();
+    }
+  }
 
   async register(registerUserDTO: RegisterUserDTO): Promise<UserEntity> {
 
@@ -52,19 +96,6 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
         throw error;
       }
 
-      console.log(error);
-      throw HttpError.internalServerError();
-    }
-  }
-
-  async getUsers(): Promise<UserEntity[]> {
-
-    try {
-      const pool = await MysqlDatabase.getPoolInstance();
-      const [rows]: [any[], any] = await pool.query("SELECT * FROM User");
-
-      return rows.map((user) => UserEntityMapper.userEntityFromObject(user));
-    } catch (error) {
       console.log(error);
       throw HttpError.internalServerError();
     }
