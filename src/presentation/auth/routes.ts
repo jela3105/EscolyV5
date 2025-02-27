@@ -8,6 +8,7 @@ import { BcryptAdapter } from "../../config";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 export class AuthRoutes {
+
   static get routes(): Router {
     const router = Router();
 
@@ -15,14 +16,13 @@ export class AuthRoutes {
       BcryptAdapter.hash,
       BcryptAdapter.compare
     );
+
     const authRepository = new AuthRepositoryImpl(database);
     const authController = new AuthController(authRepository);
 
     // Add routes here
     router.post("/login", authController.loginUser);
-
     router.post("/register", authController.registerUser);
-
     router.get("/users", [AuthMiddleware.validateJWT] ,authController.getUsers);
 
     return router;

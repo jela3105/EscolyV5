@@ -18,14 +18,14 @@ export class Server {
   }
 
   async start() {
+
     //Middlewares
     this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
+    this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded is postman
 
     //Routes definition
     this.app.use(this.routes);
 
-    //
     this.app.listen(this.port, () => {
       console.log(`Server started on port ${this.port}`);
     });

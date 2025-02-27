@@ -8,7 +8,7 @@ export class RegisterUserDTO {
     public email: string,
     public role: number,
     public password: string
-  ) {}
+  ) { }
 
   static create(object: { [key: string]: any }): [string?, RegisterUserDTO?] {
     const {

@@ -2,11 +2,13 @@ import mysql from "mysql2/promise";
 import { envs } from "../../config";
 
 export class MysqlDatabase {
+
   private static poolInstance: mysql.Pool;
 
-  private constructor() {}
+  private constructor() { }
 
   public static async getPoolInstance(): Promise<mysql.Pool> {
+
     if (!this.poolInstance) {
       this.poolInstance = mysql.createPool({
         host: envs.MYSQL_HOST,

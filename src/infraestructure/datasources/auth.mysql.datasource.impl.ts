@@ -1,8 +1,7 @@
-import { stringify } from "querystring";
 import { MysqlDatabase } from "../../data/mysql/mysql-database";
 import {
   AuthDataSource,
-  CustomError,
+  HttpError,
   RegisterUserDTO,
   UserEntity,
 } from "../../domain";
@@ -12,26 +11,24 @@ type HashFunction = (password: string) => string;
 type CompareFunction = (password: string, hashed: string) => boolean;
 
 export class AuthMysqlDatasourceImpl implements AuthDataSource {
+
   constructor(
     private readonly hashFunction: HashFunction,
     private readonly compareFunction: CompareFunction
-  ) {}
+  ) { }
 
   async register(registerUserDTO: RegisterUserDTO): Promise<UserEntity> {
-    const { role, names, fathersLastName, mothersLastName, email, password } =
-      registerUserDTO;
+
+    const { role, names, fathersLastName, mothersLastName, email, password } = registerUserDTO;
 
     try {
       const pool = await MysqlDatabase.getPoolInstance();
 
       // Verify if user already exists
-      const [rows]: [any[], any] = await pool.query(
-        "SELECT * FROM User WHERE email = ?",
-        [email]
-      );
+      const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE email = ?", [email]);
 
       if (rows.length != 0) {
-        throw CustomError.conflict("User already exists");
+        throw HttpError.conflict("User already exists");
       }
 
       // Insert user
@@ -46,23 +43,22 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
           this.hashFunction(password),
         ]
       );
+      const [userInserted]: [any[], any] = await pool.query("SELECT * FROM User WHERE email = ?", [email]);
 
-      const [userInserted]: [any[], any] = await pool.query(
-        "SELECT * FROM User WHERE email = ?",
-        [email]
-      );
-      // TODO: validate mapper
       return UserEntityMapper.userEntityFromObject(userInserted[0]);
     } catch (error) {
-      if (error instanceof CustomError) {
+
+      if (error instanceof HttpError) {
         throw error;
       }
+
       console.log(error);
-      throw CustomError.internalServerError();
+      throw HttpError.internalServerError();
     }
   }
 
   async getUsers(): Promise<UserEntity[]> {
+
     try {
       const pool = await MysqlDatabase.getPoolInstance();
       const [rows]: [any[], any] = await pool.query("SELECT * FROM User");
@@ -70,7 +66,7 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       return rows.map((user) => UserEntityMapper.userEntityFromObject(user));
     } catch (error) {
       console.log(error);
-      throw CustomError.internalServerError();
+      throw HttpError.internalServerError();
     }
   }
 }

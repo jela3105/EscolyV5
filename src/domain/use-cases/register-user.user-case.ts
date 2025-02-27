@@ -1,5 +1,5 @@
 import { RegisterUserDTO } from "../dtos/auth/register-user.dto";
-import { CustomError } from "../errors/custom.error";
+import { HttpError } from "../errors/http.error";
 import { AuthRepository } from "../repositories/auth.repository";
 
 interface UserToken {
@@ -30,7 +30,7 @@ export class RegisterUser implements RegisterUserUseCase {
         const token = await this.signToken({ id: user.userId });
 
         if (!token) {
-            throw CustomError.internalServerError("Error generating token");
+            throw HttpError.internalServerError("Error generating token");
         }
 
         return {

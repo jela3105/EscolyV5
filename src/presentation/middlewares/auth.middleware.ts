@@ -3,11 +3,13 @@ import { JwtAdapter } from "../../config";
 import { MysqlDatabase } from "../../data/mysql";
 
 export class AuthMiddleware {
+
   static validateJWT: RequestHandler = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
+
     const authorization = req.header("Authorization");
 
     if (!authorization) {
@@ -24,13 +26,13 @@ export class AuthMiddleware {
 
     try {
       const payload = await JwtAdapter.validateToken<{ id: string }>(token);
+
       if (!payload) {
         res.status(401).json({ error: "Invalid token" });
         return;
       }
 
-      //TODO: Change to repository
-
+      //TODO: Change query to use repository 
       (await MysqlDatabase.getPoolInstance())
         .query("SELECT * FROM User WHERE userId = ?", [payload.id])
         .then((result) => {
@@ -38,7 +40,6 @@ export class AuthMiddleware {
         });
 
       req.body.payload = payload;
-
       next();
     } catch (error) {
       console.log(error);
