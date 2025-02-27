@@ -43,9 +43,9 @@ export class AuthController {
       .getUsers()
       .then((users) => {
         res.json({
-          //users,
-          token: req.body.token,
+          users,
           payload: req.body.payload,
+          user: req.body.user,
         });
       })
       .catch((error) => this.handleError(error, res));
