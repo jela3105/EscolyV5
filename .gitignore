@@ -124,7 +124,7 @@ dist
 
 # Mysql database directory
 mysql_data/
-init.sql
+mysql-init/
 
 # TernJS port file
 .tern-port

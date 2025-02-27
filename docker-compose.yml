@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   escoly-mysql-db:
-    image: mysql
+    image: mysql:latest
     env_file: ./.env
     container_name: escoly-mysql
     environment:
@@ -10,8 +10,8 @@ services:
     ports:
       - $MYSQL_PORT:$MYSQL_DOCKER_PORT
     volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
       - ./mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   
   escoly-app:
     build: .

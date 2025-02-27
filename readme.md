@@ -23,9 +23,13 @@ MYSQL_DATABASE=Escoly
 NODE_ENV=dev
 ```
 
-### 3. Load the init.sql script for database
-- Save the database init file in root directory (EscolyV5/) in order load the schema into the docker containner.
-- You can request access in here: https://drive.google.com/file/d/1lIyxdvrjjKE5vYGqmQHDxH3n7I9evscq/view?usp=sharing
+### 3. Load script to create the schema and the initial info of the database 
+- Create a new directory in root with the name `mysql-init/` and download the following files:
+- [The script to create the database schema](https://drive.google.com/file/d/2lIyxdvrjjKE5vYGqmQHDxH3n7I9evscq/view?usp=sharing) and name it `init.sql`
+- [The script to initialize database with the basic information](https://drive.google.com/file/d/1O7tsNSMyWef9cclmS-gOtu4kQIOwuZr5/view?usp=drive_link) and name it `initdata.sql`;
+
+*Important note:* The files are load in alphabetic order, so make dure to first load the database schema, and the file that inserts data 
+
 
 ### 4. Run the project
 In order to run the project, you can use: 
