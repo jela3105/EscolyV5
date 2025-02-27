@@ -28,7 +28,7 @@ export class AuthController {
       .then(async (user) => {
         res.json({
           user,
-          token: await JwtAdapter.generateToken({ email: user.email }),
+          token: await JwtAdapter.generateToken({ id: user.userId }),
         });
       })
       .catch((error) => this.handleError(error, res));
@@ -36,5 +36,18 @@ export class AuthController {
 
   loginUser = async (req: Request, res: Response) => {
     res.json("loginrUser conroller");
+  };
+
+  getUsers = (req: Request, res: Response) => {
+    this.authRepository
+      .getUsers()
+      .then((users) => {
+        res.json({
+          //users,
+          token: req.body.token,
+          payload: req.body.payload,
+        });
+      })
+      .catch((error) => this.handleError(error, res));
   };
 }

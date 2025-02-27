@@ -10,4 +10,8 @@ export class AuthRepositoryImpl implements AuthRepository{
         return this.datasource.register(registerUserDTO);
     }
 
+    getUsers(): Promise<UserEntity[]> {
+        return this.datasource.getUsers();
+    }
+
 }

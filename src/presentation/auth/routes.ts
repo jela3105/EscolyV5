@@ -5,6 +5,7 @@ import {
   AuthRepositoryImpl,
 } from "../../infraestructure";
 import { BcryptAdapter } from "../../config";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 export class AuthRoutes {
   static get routes(): Router {
@@ -21,6 +22,8 @@ export class AuthRoutes {
     router.post("/login", authController.loginUser);
 
     router.post("/register", authController.registerUser);
+
+    router.get("/users", [AuthMiddleware.validateJWT] ,authController.getUsers);
 
     return router;
   }

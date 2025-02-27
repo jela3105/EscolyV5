@@ -61,4 +61,16 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       throw CustomError.internalServerError();
     }
   }
+
+  async getUsers(): Promise<UserEntity[]> {
+    try {
+      const pool = await MysqlDatabase.getPoolInstance();
+      const [rows]: [any[], any] = await pool.query("SELECT * FROM User");
+
+      return rows.map((user) => UserEntityMapper.userEntityFromObject(user));
+    } catch (error) {
+      console.log(error);
+      throw CustomError.internalServerError();
+    }
+  }
 }
