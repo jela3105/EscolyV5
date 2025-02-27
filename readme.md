@@ -13,7 +13,7 @@ or
 `gh repo clone jela3105/EscolyV5`
 
 ### 2. Create file .env
-Create .env file to setup myslq credentials, you can use .env.template to setup  the follwoing credentials:
+Create .env file to setup myslq credentials, you can use .env.template to setup the following credentials:
 ```ini
 PORT=3000
 MYSQL_HOST=localhost
@@ -24,8 +24,8 @@ NODE_ENV=dev
 ```
 
 ### 3. Load script to create the schema and the initial info of the database 
-- Create a new directory in root with the name `mysql-init/` and download the following files:
-- [The script to create the database schema](https://drive.google.com/file/d/2lIyxdvrjjKE5vYGqmQHDxH3n7I9evscq/view?usp=sharing) and name it `init.sql`
+Create a new directory in root with the name `mysql-init/` and download the following files:
+- [The script to create the database schema](https://drive.google.com/file/d/1lIyxdvrjjKE5vYGqmQHDxH3n7I9evscq/view?usp=drive_link) and name it `init.sql`
 - [The script to initialize database with the basic information](https://drive.google.com/file/d/1O7tsNSMyWef9cclmS-gOtu4kQIOwuZr5/view?usp=drive_link) and name it `initdata.sql`;
 
 *Important note:* The files are load in alphabetic order, so make dure to first load the database schema, and the file that inserts data 
@@ -40,12 +40,18 @@ docker-compose up
 ## **Log into mysql docker containner**
 
 - Get into the shell of the containner:
-`docker exec -it <container_name_or_id> bash`
+```bash
+docker exec -it <container_name_or_id> bash
+```
 
 - Log in direcly as root in mysql:
-`docker exec -it <container_name_or_id> mysql -u root -p`
+```bash
+docker exec -it <container_name_or_id> mysql -u root -p
+```
 
 ## **Notes for development with poOs!**
 
-- Be able to remove the mysql volume
-`sudo chown -R $USER <directory>`
+- Be able to remove the mysql volume directory generated
+```bash
+sudo chown -R $USER <directory>`
+```
