@@ -21,6 +21,7 @@ MYSQL_DOCKER_PORT=3306
 MYSQL_ROOT_PASSWORD=root
 MYSQL_DATABASE=Escoly
 NODE_ENV=dev
+JWT_SEED=seed
 ```
 
 ### 3. Load script to create the schema and the initial info of the database 
