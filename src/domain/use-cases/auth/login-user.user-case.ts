@@ -1,6 +1,6 @@
-import { LoginUserDTO } from "../dtos/auth/login-user.dto";
-import { HttpError } from "../errors/http.error";
-import { AuthRepository } from "../repositories/auth.repository";
+import { LoginUserDTO } from "../../dtos/auth/login-user.dto";
+import { HttpError } from "../../errors/http.error";
+import { AuthRepository } from "../../repositories/auth.repository";
 
 interface UserToken {
     token: string;

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { RegisterUserDTO } from "../../domain/dtos/auth/register-user.dto";
 import { AuthRepository, HttpError, RegisterUser } from "../../domain";
 import { JwtAdapter } from "../../config";
-import { LoginUser } from "../../domain/use-cases/login-user.user-case";
+import { LoginUser } from "../../domain/use-cases/auth/login-user.user-case";
 import { LoginUserDTO } from "../../domain/dtos/auth/login-user.dto";
 
 export class AuthController {
