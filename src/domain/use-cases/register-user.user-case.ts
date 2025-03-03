@@ -2,8 +2,7 @@ import { RegisterUserDTO } from "../dtos/auth/register-user.dto";
 import { HttpError } from "../errors/http.error";
 import { AuthRepository } from "../repositories/auth.repository";
 
-interface UserToken {
-    token: string;
+interface User {
     user: {
         id: number;
         name: string;
@@ -24,17 +23,11 @@ export class RegisterUser implements RegisterUserUseCase {
         private readonly signToken: SignToken
     ) { }
 
-    async execute(registerUserDto: RegisterUserDTO): Promise<UserToken> {
+    async execute(registerUserDto: RegisterUserDTO): Promise<User> {
 
         const user = await this.authRepository.register(registerUserDto);
-        const token = await this.signToken({ id: user.userId });
-
-        if (!token) {
-            throw HttpError.internalServerError("Error generating token");
-        }
 
         return {
-            token: token,
             user: {
                 id: user.userId,
                 name: user.names,
