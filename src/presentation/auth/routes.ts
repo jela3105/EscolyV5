@@ -23,7 +23,6 @@ export class AuthRoutes {
     // Add routes here
     router.post("/login", authController.loginUser);
     router.post("/register", authController.registerUser);
-    router.get("/users", [AuthMiddleware.validateJWT] ,authController.getUsers);
 
     return router;
   }
