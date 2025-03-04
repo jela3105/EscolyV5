@@ -1,3 +1,4 @@
+import { buildLogger } from "../../config";
 import { MysqlDatabase } from "../../data/mysql/mysql-database";
 import {
   AuthDataSource,
@@ -13,13 +14,15 @@ type CompareFunction = (password: string, hashed: string) => boolean;
 
 export class AuthMysqlDatasourceImpl implements AuthDataSource {
 
+  private logger = buildLogger("AuthMysqlDatasourceImpl");
+
   constructor(
     private readonly hashFunction: HashFunction,
     private readonly compareFunction: CompareFunction
   ) { }
 
   async login(loginUserDTO: LoginUserDTO): Promise<UserEntity> {
-    
+
     const { email, password } = loginUserDTO;
 
     try {
@@ -43,7 +46,7 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
         throw error;
       }
 
-      console.log(error);
+      this.logger.error(`${error}`);
       throw HttpError.internalServerError();
     }
   }
@@ -83,7 +86,7 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
         throw error;
       }
 
-      console.log(error);
+      this.logger.error(`${error}`);
       throw HttpError.internalServerError();
     }
   }

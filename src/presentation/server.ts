@@ -1,4 +1,5 @@
 import express, { Router } from "express";
+import { buildLogger } from "../config";
 
 interface Options {
   port: number;
@@ -27,7 +28,7 @@ export class Server {
     this.app.use(this.routes);
 
     this.app.listen(this.port, () => {
-      console.log(`Server started on port ${this.port}`);
+      buildLogger("Server").log(`Server started on port ${this.port}`);
     });
   }
 }

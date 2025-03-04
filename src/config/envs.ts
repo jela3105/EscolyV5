@@ -9,4 +9,5 @@ export const envs = {
   MYSQL_PASSWORD: get("MYSQL_ROOT_PASSWORD").required().asString(),
   MYSQL_DATABASE: get("MYSQL_DATABASE").required().asString(),
   JWT_SEED: get("JWT_SEED").required().asString(),
+  NODE_ENV: get("NODE_ENV").required().asString(),
 };

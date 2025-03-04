@@ -2,8 +2,11 @@ import { MysqlDatabase } from "../../data/mysql";
 import { HttpError, UserEntity } from "../../domain";
 import { AdminDataSource } from "../../domain/datasources/admin.datasource";
 import { UserEntityMapper } from "../mappers/user.mapper";
+import { buildLogger } from "../../config/logger";
 
 export class AdminDatasourceImpl implements AdminDataSource {
+
+    private logger = buildLogger("AdminDatasourceImpl");
 
     constructor() { }
 
@@ -14,7 +17,7 @@ export class AdminDatasourceImpl implements AdminDataSource {
 
             return rows.map((user) => UserEntityMapper.userEntityFromObject(user));
         } catch (error) {
-            console.log(error);
+            this.logger.error(`${error}`);
             throw HttpError.internalServerError();
         }
     }

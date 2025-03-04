@@ -1,9 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { JwtAdapter } from "../../config";
+import { buildLogger, JwtAdapter } from "../../config";
 import { MysqlDatabase } from "../../data/mysql";
 import { UserEntityMapper } from "../../infraestructure";
 
 export class AuthMiddleware {
+
+  private static logger = buildLogger("AuthMiddleware");
 
   static validateJWT: RequestHandler = async (
     req: Request,
@@ -43,7 +45,7 @@ export class AuthMiddleware {
       req.body.payload = payload;
       next();
     } catch (error) {
-      console.log(error);
+      this.logger.error(`${error}`);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
@@ -67,7 +69,7 @@ export class AuthMiddleware {
 
       next();
     } catch (error) {
-      console.log(error);
+      this.logger.error(`${error}`);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
