@@ -1,4 +1,5 @@
 import { HttpError, UserEntity } from "../../domain";
+import { RoleEnum } from "../../domain/enums/role.enum";
 
 export class UserEntityMapper {
     static userEntityFromObject(object: { [key: string]: any }): UserEntity {
@@ -14,9 +15,11 @@ export class UserEntityMapper {
         if (!mothersLastName) throw HttpError.badRequest('Missing mothersLastName');
         if (!email) throw HttpError.badRequest('Missing email');
 
+        const role = roleId in RoleEnum ? (roleId as RoleEnum) : RoleEnum.GUARDIAN;
+
         return new UserEntity(
             userId || id,
-            roleId,
+            role,
             names,
             fathersLastName,
             mothersLastName,

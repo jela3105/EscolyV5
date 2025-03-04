@@ -7,6 +7,8 @@ import {
   UserEntity,
 } from "../../domain";
 import { LoginUserDTO } from "../../domain/dtos/auth/login-user.dto";
+import { RoleEntity } from "../../domain/entities/role.entity";
+import { RoleEnum } from "../../domain/enums/role.enum";
 import { UserEntityMapper } from "../mappers/user.mapper";
 
 type HashFunction = (password: string) => string;
@@ -53,7 +55,7 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
 
   async register(registerUserDTO: RegisterUserDTO): Promise<UserEntity> {
 
-    const { role, names, fathersLastName, mothersLastName, email, password } = registerUserDTO;
+    const { names, fathersLastName, mothersLastName, email, password } = registerUserDTO;
 
     try {
       const pool = await MysqlDatabase.getPoolInstance();
@@ -69,7 +71,7 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       await pool.execute(
         "INSERT INTO User (roleId, names, fathersLastName, mothersLastName, email, password) VALUES (?, ?, ?, ?, ?, ?)",
         [
-          role,
+          RoleEntity.fromEnum(RoleEnum.GUARDIAN).roleNumber,
           names,
           fathersLastName,
           mothersLastName,

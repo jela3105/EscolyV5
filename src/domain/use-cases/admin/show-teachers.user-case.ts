@@ -12,6 +12,15 @@ export class ShowTeachers implements ShowTeachersUseCase {
 
     async execute(): Promise<any> {
         const users = await this.adminRepository.getTeachers();
-        return users; 
+        return {
+            teachers: users.map((user) => {
+                return {
+                    id: user.userId,
+                    name: user.names,
+                    email: user.email,
+                    roleId: user.roleId
+                }
+            })
+        }; 
     }
 }

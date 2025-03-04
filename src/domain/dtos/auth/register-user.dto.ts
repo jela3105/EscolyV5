@@ -1,4 +1,5 @@
 import { Validators } from "../../../config";
+import { RoleEnum } from "../../enums/role.enum";
 
 export class RegisterUserDTO {
   private constructor(
@@ -6,7 +7,6 @@ export class RegisterUserDTO {
     public fathersLastName: string,
     public mothersLastName: string,
     public email: string,
-    public role: number,
     public password: string
   ) { }
 
@@ -16,7 +16,6 @@ export class RegisterUserDTO {
       fathersLastName,
       mothersLastName,
       email,
-      role = 1,
       password,
     } = object;
 
@@ -35,7 +34,6 @@ export class RegisterUserDTO {
         fathersLastName,
         mothersLastName,
         email.toLowerCase(),
-        role,
         password
       ),
     ];

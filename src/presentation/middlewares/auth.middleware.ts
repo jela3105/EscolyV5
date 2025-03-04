@@ -62,7 +62,7 @@ export class AuthMiddleware {
 
       const user = UserEntityMapper.userEntityFromObject(rows[0]);
 
-      if (user.roleId !== 2) {
+      if (user.roleId !== 3) {
         res.status(401).json({ error: "Unauthorized user for operation" });
         return;
       }
