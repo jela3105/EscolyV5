@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { JwtAdapter } from "../../config";
 import { MysqlDatabase } from "../../data/mysql";
+import { UserEntityMapper } from "../../infraestructure";
 
 export class AuthMiddleware {
 
@@ -46,5 +47,29 @@ export class AuthMiddleware {
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
-  
+
+  static isAdmin: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const id = req.body.payload.id;
+    try {
+      const pool = await MysqlDatabase.getPoolInstance();
+      const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE userId = ?", [id]);
+
+      const user = UserEntityMapper.userEntityFromObject(rows[0]);
+
+      if (user.roleId !== 2) {
+        res.status(401).json({ error: "Unauthorized user for operation" });
+        return;
+      }
+
+      next();
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
 }

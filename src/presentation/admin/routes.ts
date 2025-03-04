@@ -15,7 +15,7 @@ export class AdminRoutes {
     const adminController = new AdminController(adminRepository);
 
     // Add routes here
-    router.get("/teachers", [AuthMiddleware.validateJWT], adminController.getTeachers);
+    router.get("/teachers", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], adminController.getTeachers);
 
     return router;
   }
