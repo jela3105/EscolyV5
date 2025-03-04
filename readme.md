@@ -16,7 +16,7 @@ or
 Create .env file to setup myslq credentials, you can use .env.template to setup the following credentials:
 ```ini
 PORT=3000
-MYSQL_HOST=localhost
+MYSQL_HOST=escoly-mysql-db
 MYSQL_DOCKER_PORT=3306
 MYSQL_ROOT_PASSWORD=root
 MYSQL_DATABASE=Escoly
