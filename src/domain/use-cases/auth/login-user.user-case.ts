@@ -1,4 +1,5 @@
 import { LoginUserDTO } from "../../dtos/auth/login-user.dto";
+import { RoleEnum } from "../../enums/role.enum";
 import { HttpError } from "../../errors/http.error";
 import { AuthRepository } from "../../repositories/auth.repository";
 
@@ -6,8 +7,8 @@ interface UserToken {
     token: string;
     user: {
         id: number;
-        name: string;
         email: string;
+        role: RoleEnum;
     }
 }
 
@@ -27,7 +28,7 @@ export class LoginUser implements LoginUserUseCase {
     async execute(loginUserDTO: LoginUserDTO): Promise<UserToken> {
 
         const user = await this.authRepository.login(loginUserDTO);
-        const token = await this.signToken({ id: user.userId });
+        const token = await this.signToken({ id: user.userId, role: user.roleId });
 
         if (!token) {
             throw HttpError.internalServerError();
@@ -37,8 +38,8 @@ export class LoginUser implements LoginUserUseCase {
             token: token,
             user: {
                 id: user.userId,
-                name: user.names,
-                email: user.email
+                email: user.email,
+                role: user.roleId
             }
         }
     }

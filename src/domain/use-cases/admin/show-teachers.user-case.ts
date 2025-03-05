@@ -4,23 +4,30 @@ abstract class ShowTeachersUseCase {
     abstract execute(): Promise<any>;
 }
 
+interface Teacher{
+    id: number;
+    names: string;
+    fatherLastName: string;
+    motherLastName: string;
+    email: string;
+}
+
 export class ShowTeachers implements ShowTeachersUseCase {
 
     constructor(
         private readonly adminRepository: AdminRepository,
     ) { }
 
-    async execute(): Promise<any> {
+    async execute(): Promise<Teacher[]> {
         const users = await this.adminRepository.getTeachers();
-        return {
-            teachers: users.map((user) => {
+        return users.map((user) => {
                 return {
                     id: user.userId,
-                    name: user.names,
+                    names: user.names,
+                    fatherLastName: user.fathersLastName,
+                    motherLastName: user.mothersLastName,
                     email: user.email,
-                    roleId: user.roleId
                 }
             })
-        }; 
     }
 }

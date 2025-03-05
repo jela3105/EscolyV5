@@ -28,7 +28,7 @@ export class AuthMiddleware {
     const token = (await authorization.split(" ")[1]) || "";
 
     try {
-      const payload = await JwtAdapter.validateToken<{ id: string }>(token);
+      const payload = await JwtAdapter.validateToken<{ id: string, role: number }>(token);
 
       if (!payload) {
         res.status(401).json({ error: "Invalid token" });
@@ -55,14 +55,10 @@ export class AuthMiddleware {
     res: Response,
     next: NextFunction
   ) => {
-    const id = req.body.payload.id;
+    const { role } = req.body.payload;
     try {
-      const pool = await MysqlDatabase.getPoolInstance();
-      const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE userId = ?", [id]);
 
-      const user = UserEntityMapper.userEntityFromObject(rows[0]);
-
-      if (user.roleId !== 3) {
+      if (role !== 3) {
         res.status(401).json({ error: "Unauthorized user for operation" });
         return;
       }
