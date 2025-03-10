@@ -17,7 +17,7 @@ export class AuthController {
       return;
     }
 
-    new RegisterUser(this.authRepository, JwtAdapter.generateToken)
+    new RegisterUser(this.authRepository)
       .execute(registeruserDTO!)
       .then(data => res.json(data))
       .catch(error => HttpErrorHandler.handleError(error, res))

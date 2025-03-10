@@ -20,7 +20,6 @@ export class RegisterUser implements RegisterUserUseCase {
 
     constructor(
         private readonly authRepository: AuthRepository,
-        private readonly signToken: SignToken
     ) { }
 
     async execute(registerUserDto: RegisterUserDTO): Promise<User> {
