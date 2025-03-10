@@ -2,6 +2,7 @@ import { Validators } from "../../../config/validators";
 
 export class RegisterTeacherDTO {
     private constructor(
+        //TODO: Receive group id
         public email: string,
         public names?: string,
         public fathersLastName?: string,
