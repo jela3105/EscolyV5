@@ -1,37 +1,44 @@
-import { createTransport } from 'nodemailer';
+import { createTransport, Transporter } from 'nodemailer';
 import { envs } from './envs';
 
 interface SendMailOptions {
+    from: string
     to: string[] | string;
     subject: string;
     htmlBody: string;
 }
 
 export class NodeMailerAdapter {
-    private transporter = createTransport({
-        service: envs.MAILER_SERVICE,
-        auth: {
-            user: envs.MAILER_EMAIL,
-            pass: envs.MAILER_SECRET_KEY,
-        }
-    });
+
+    private transporter: Transporter;
+
+    constructor(
+        mailerService: string,
+        mailerEmail: string,
+        senderEmailKey: string
+    ) {
+        this.transporter = createTransport({
+            service: mailerService,
+            auth: {
+                user: mailerEmail,
+                pass: senderEmailKey,
+            }
+        });
+    }
 
     async sentEmail(options: SendMailOptions): Promise<boolean> {
-
-        const { to, subject, htmlBody } = options;
+        const { from, to, subject, htmlBody } = options;
         try {
 
             const sentInformation = await this.transporter.sendMail({
-                from: "@escoly.org",
+                from: from,
                 to: to,
                 subject: subject,
                 html: htmlBody
             })
 
-            console.log(sentInformation);
             return true;
         } catch (error) {
-            console.log(error)
             return false;
         }
 
