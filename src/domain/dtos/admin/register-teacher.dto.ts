@@ -4,9 +4,9 @@ export class RegisterTeacherDTO {
     private constructor(
         //TODO: Receive group id
         public email: string,
-        public names?: string,
-        public fathersLastName?: string,
-        public mothersLastName?: string
+        public names: string,
+        public fathersLastName: string,
+        public mothersLastName: string
     ) { }
 
     static create(object: { [key: string]: any; }): [string?, RegisterTeacherDTO?] {
