@@ -4,6 +4,8 @@ import { AdminDataSource } from "../../domain/datasources/admin.datasource";
 import { UserEntityMapper } from "../mappers/user.mapper";
 import { buildLogger } from "../../config/logger";
 import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto";
+import { RoleEntity } from "../../domain/entities/role.entity";
+import { RoleEnum } from "../../domain/enums/role.enum";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -13,7 +15,6 @@ interface RegisterTeacherSuccessDTO {
 }
 
 export class AdminDatasourceImpl implements AdminDataSource {
-
     private logger = buildLogger("AdminDatasourceImpl");
 
     constructor() { }
@@ -31,38 +32,36 @@ export class AdminDatasourceImpl implements AdminDataSource {
     }
 
     async registerTeacher(registerTeacherDto: RegisterTeacherDTO): Promise<any> {
+
+        const { email, names, fathersLastName, mothersLastName } = registerTeacherDto;
+
         try {
             const pool = await MysqlDatabase.getPoolInstance();
-            const { email, fathersLastName, mothersLastName, names } = registerTeacherDto;
-            const setClause = `roleId = 2`;
+            // Verify if user already exists
+            const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE email = ?", [email]);
 
-            if (fathersLastName) {
-                setClause.concat(`, fathersLastName = '${fathersLastName}'`);
+            if (rows.length != 0) {
+                throw HttpError.conflict("User already exists");
             }
 
-            if (mothersLastName) {
-                setClause.concat(`, mothersLastName = '${mothersLastName}'`);
-            }
+            // Insert user
+            await pool.execute(
+                "INSERT INTO User (roleId, names, fathersLastName, mothersLastName, email) VALUES (?, ?, ?, ?, ?)",
+                [
+                    RoleEntity.fromEnum(RoleEnum.TEACHER).roleNumber,
+                    names,
+                    fathersLastName,
+                    mothersLastName,
+                    email,
+                ]
+            );
+            const [userInserted]: [any[], any] = await pool.query(
+                "SELECT * FROM User WHERE email = ?",
+                [email]
+            );
 
-            if (names) {
-                setClause.concat(`, names = '${names}'`);
-            }
-
-            const [result]: [any, any] = await pool.execute(`UPDATE User SET ${setClause} WHERE email = ?`, [email]);
-
-            if (result.affectedRows === 0) {
-                throw HttpError.notFound("User not found");
-            }
-
-            return {
-                email,
-                fathersLastName,
-                mothersLastName,
-                names
-            } as RegisterTeacherSuccessDTO;
-
-        } catch (error: any) {
-
+            return UserEntityMapper.userEntityFromObject(userInserted[0]);
+        } catch (error) {
             if (error instanceof HttpError) {
                 throw error;
             }

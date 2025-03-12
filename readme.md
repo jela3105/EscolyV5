@@ -22,7 +22,13 @@ MYSQL_ROOT_PASSWORD=root
 MYSQL_DATABASE=Escoly
 NODE_ENV=dev
 JWT_SEED=seed
+MAILER_EMAIL=
+MAILER_SERVICE=
+MAILER_SECRET_KEY=
+WEB_SERVICE_URL=
 ```
+
+You can downlaod the dev .env with the values to run locally [here](https://drive.google.com/file/d/1-4WoA9N2mtvKC40NsW1bQIOrlW8cJ4Ft/view?usp=sharing) 
 
 ### 3. Load script to create the schema and the initial info of the database 
 Create a new directory in root with the name `mysql-init/` and download the following files:
@@ -54,5 +60,5 @@ docker exec -it <container_name_or_id> mysql -u root -p
 
 - Be able to remove the mysql volume directory generated
 ```bash
-sudo chown -R $USER <directory>`
+sudo chown -R $USER <directory>
 ```

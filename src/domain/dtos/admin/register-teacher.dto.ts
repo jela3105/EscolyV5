@@ -11,8 +11,16 @@ export class RegisterTeacherDTO {
 
     static create(object: { [key: string]: any; }): [string?, RegisterTeacherDTO?] {
 
-        const {email, names ,fathersLastName, mothersLastName } = object;
+        const {
+            email,
+            names,
+            fathersLastName,
+            mothersLastName,
+        } = object;
 
+        if (!names) return ["Missing names"];
+        if (!fathersLastName) return ["Missing fathers last name"];
+        if (!mothersLastName) return ["Missing mothers last name"];
         if (!email) return ["Missing email"];
         if (!Validators.email.test(email)) return ["Invalid email"];
 
@@ -22,7 +30,7 @@ export class RegisterTeacherDTO {
                 email.toLowerCase(),
                 names,
                 fathersLastName,
-                mothersLastName
+                mothersLastName,
             ),
         ];
     }
