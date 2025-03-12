@@ -18,6 +18,7 @@ export class RegisterTeacher implements RegisterTeacerUserCase {
         private readonly url: string
     ) { }
 
+    //TODO: Convert to send email user case
     private async sendEmailToCreatePassword(email: string) {
         console.log(email)
 
