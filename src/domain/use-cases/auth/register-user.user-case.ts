@@ -1,5 +1,4 @@
 import { RegisterUserDTO } from "../../dtos/auth/register-user.dto"
-import { HttpError } from "../../errors/http.error";
 import { AuthRepository } from "../../repositories/auth.repository";
 
 interface User {

@@ -92,4 +92,25 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       throw HttpError.internalServerError();
     }
   }
+
+  async createUserPassword(email: string, password: string): Promise<void> {
+    try {
+      const pool = await MysqlDatabase.getPoolInstance();
+      const [rows]: [any[], any] = await pool.query("SELECT password FROM User WHERE email = ? AND password IS NULL", [email]);
+
+      if (rows.length === 0) {
+        throw HttpError.conflict("Password already set");
+      }
+
+      await pool.execute("UPDATE User SET password = ? WHERE email = ?", [this.hashFunction(password), email])
+    } catch (error) {
+
+      if (error instanceof HttpError) {
+        throw error;
+      }
+
+      this.logger.error(`${error}`);
+      throw HttpError.internalServerError();
+    }
+  }
 }

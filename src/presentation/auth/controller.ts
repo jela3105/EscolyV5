@@ -5,6 +5,7 @@ import { HttpErrorHandler } from "../errors-handler/http-errors-handler";
 import { envs, JwtAdapter } from "../../config";
 import { LoginUserDTO } from "../../domain/dtos/auth/login-user.dto";
 import { TokenService } from "../../domain/services/token/token.service";
+import { CreateUserPassword } from "../../domain/use-cases/auth/create-user-password.user-case";
 
 export class AuthController {
 
@@ -63,6 +64,11 @@ export class AuthController {
     if (!token) res.status(404).json()
 
     await this.tokenService.invalidateToken(token, payload.exp);
+
+    await new CreateUserPassword(this.authRepository)
+      .execute(payload.email, req.body.password)
+      .catch(error => HttpErrorHandler.handleError(error, res))
+
     res.render("close-window");
   }
 
