@@ -29,15 +29,19 @@ export class RegisterTeacher implements RegisterTeacerUserCase {
         const link = `${this.url}/auth/create-password/${token}`;
 
         const isSend = await this.emailService.sendEmail({
-            from: "no-reply@escoly.org",
-            to: email,
-            subject: "Creacion de contrasena para cuenta de Escoly",
-            htmlBody:
-                `<h1>Crear contrasena para poder acceder a Escoly</h1>
-                <p> Por favor, cree su contrasena para poder crear su cuenta en Escoly </p>
-                <a href="${link}">Crear contrasena para ${email} </a>
+          from: "no-reply@escoly.org",
+          to: email,
+          subject: "Creacion de contraseña para cuenta de Escoly",
+          htmlBody: `<h1>Cree su contraseña</h1>
+                <p> Usted fue añadido/a por un administrador para crear una cuenta como profesor/a, por favor de 
+                <a href="${link}">click aqui</a> para crear su contraseña y poder tener acceso.</p>
+                
+                <p> Si tiene problemas para dar click, por favor copie y pegue el siguiente link en su navegador: </p>
+                <a href="${link}"> ${link} </a>
+
+                <p><b><i>*Solamente puede dar click una vez el link, en caso de que haya problemas pongase en contacto con su administardor*</i></b></p>
                 `,
-        })
+        });
 
         if(!isSend) throw HttpError.internalServerError("Could not send email to generate password")
     }
