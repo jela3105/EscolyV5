@@ -4,13 +4,29 @@ import { HttpErrorHandler } from "../errors-handler/http-errors-handler";
 import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto";
 import { RegisterTeacher } from "../../domain/use-cases/admin/register-teacher.user-case";
 import { EmailService } from "../../domain/services/email/email.service";
+import { TokenRepository } from "../../domain/repositories/token.repository";
+
+export interface AdminControllerDependencies {
+    adminRepository: AdminRepository,
+    emailService: EmailService,
+    url: string
+    tokenRepository: TokenRepository
+}
 
 export class AdminController {
-    constructor(
-        private readonly adminRepository: AdminRepository,
-        private readonly emailService: EmailService,
-        private readonly url: string
-    ) { }
+
+    private readonly adminRepository: AdminRepository;
+    private readonly emailService: EmailService;
+    private readonly url: string;
+    private readonly tokenRepository: TokenRepository;
+
+    constructor(dependencies: AdminControllerDependencies) {
+        const { adminRepository, emailService, url, tokenRepository } = dependencies;
+        this.adminRepository = adminRepository;
+        this.emailService = emailService;
+        this.url = url;
+        this.tokenRepository = tokenRepository;
+    }
 
     getTeachers = (req: Request, res: Response) => {
         new ShowTeachers(this.adminRepository)
@@ -27,7 +43,12 @@ export class AdminController {
             return;
         }
 
-        new RegisterTeacher(this.adminRepository, this.emailService, this.url)
+        new RegisterTeacher({
+            adminRepository: this.adminRepository,
+            emailService: this.emailService,
+            url: this.url,
+            tokenRepository: this.tokenRepository
+        })
             .execute(registerTeacherDto!)
             .then((data) => res.json(data))
             .catch((error) => HttpErrorHandler.handleError(error, res));

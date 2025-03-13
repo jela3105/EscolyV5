@@ -50,6 +50,9 @@ export class AuthController {
   }
 
   generatePassword = async (req: Request, res: Response) => {
+
+    //TODO: Invalidate token
+
     const { token } = req.params;
 
     if (!token) res.status(404).json()

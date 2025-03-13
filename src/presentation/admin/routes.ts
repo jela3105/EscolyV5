@@ -20,8 +20,15 @@ export class AdminRoutes {
       //TODO: Add envs to NodeMailerService
       const emailService = new NodeMailerService();
 
+      const url = envs.WEB_SERVICE_URL;
       const adminRepository = new AdminRepositoryImpl(database);
-      AdminRoutes.adminController = new AdminController(adminRepository, emailService, envs.WEB_SERVICE_URL);
+
+      AdminRoutes.adminController = new AdminController({
+        adminRepository,
+        emailService,
+        url,
+        tokenRepository
+      });
     }
 
     const router = Router();
@@ -34,7 +41,7 @@ export class AdminRoutes {
 
   //TODO Refactor to acept dependencies
   static get routes(): Router {
-    if(!AdminRoutes.router){
+    if (!AdminRoutes.router) {
       throw new Error("AdminRoutes not initialized. Call AuthRoutes.initialize() first")
     }
 

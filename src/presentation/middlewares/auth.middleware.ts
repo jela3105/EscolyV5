@@ -75,6 +75,7 @@ export class AuthMiddleware {
     res: Response,
     next: NextFunction
   ) => {
+    //TODO: Validate token never used
     const { token } = req.params;
     try {
 
