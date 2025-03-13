@@ -28,7 +28,6 @@ export class NodeMailerService implements EmailService {
                 subject,
                 html: htmlBody
             })
-            console.log(sentInformation);
 
             return true;
         } catch (error: any) {

@@ -70,4 +70,26 @@ export class AuthMiddleware {
     }
   };
 
+  static validateURLJWT: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { token } = req.params;
+    try {
+
+      const payload = await JwtAdapter.validateToken<{ email: string }>(token);
+
+      if (!payload) {
+        res.status(401).json({ error: "Invalid token" });
+        return;
+      }
+
+      next();
+    } catch (error) {
+      this.logger.error(`${error}`);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
 }
