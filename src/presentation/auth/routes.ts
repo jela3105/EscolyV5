@@ -6,26 +6,45 @@ import {
 } from "../../infraestructure";
 import { BcryptAdapter } from "../../config";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { TokenRepository } from "../../domain/repositories/token.repository";
+import { TokenService } from "../../domain/services/token/token.service";
 
 export class AuthRoutes {
 
-  static get routes(): Router {
+  private static router: Router;
+  private static authController: AuthController;
+
+  static initialize(tokenRepository: TokenRepository) {
+
+    if (!AuthRoutes.authController) {
+      const database = new AuthMysqlDatasourceImpl(
+        BcryptAdapter.hash,
+        BcryptAdapter.compare
+      );
+      const authRepository = new AuthRepositoryImpl(database);
+      const tokenService = new TokenService(tokenRepository);
+
+      AuthRoutes.authController = new AuthController(authRepository, tokenService);
+    }
+
     const router = Router();
 
-    const database = new AuthMysqlDatasourceImpl(
-      BcryptAdapter.hash,
-      BcryptAdapter.compare
-    );
-
-    const authRepository = new AuthRepositoryImpl(database);
-    const authController = new AuthController(authRepository);
-
     // Add routes here
-    router.post("/login", authController.loginUser);
-    router.post("/register", authController.registerUser);
-    router.get("/create-password/:token", [AuthMiddleware.validateURLJWT], authController.createPasswordForm)
-    router.post("/generate-password/:token", [AuthMiddleware.validateURLJWT], authController.generatePassword)
+    router.post("/login", AuthRoutes.authController.loginUser);
+    router.post("/register", AuthRoutes.authController.registerUser);
+    router.get("/create-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.createPasswordForm)
+    router.post("/generate-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.generatePassword)
 
-    return router;
+    AuthRoutes.router = router;
+
+  }
+
+  static get routes(): Router {
+
+    if (!AuthRoutes.router) {
+      throw new Error("AuthRoutes not initialized. Call AuthRoutes.initialize() first")
+    }
+
+    return AuthRoutes.router;
   }
 }

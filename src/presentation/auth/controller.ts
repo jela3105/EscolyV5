@@ -4,11 +4,14 @@ import { AuthRepository, RegisterUser, LoginUser } from "../../domain";
 import { HttpErrorHandler } from "../errors-handler/http-errors-handler";
 import { envs, JwtAdapter } from "../../config";
 import { LoginUserDTO } from "../../domain/dtos/auth/login-user.dto";
-import path from "path";
+import { TokenService } from "../../domain/services/token/token.service";
 
 export class AuthController {
 
-  constructor(private readonly authRepository: AuthRepository) { }
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly tokenService: TokenService
+  ) { }
 
   registerUser = async (req: Request, res: Response) => {
     const [error, registeruserDTO] = RegisterUserDTO.create(req.body);
