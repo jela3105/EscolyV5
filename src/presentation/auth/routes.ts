@@ -23,6 +23,8 @@ export class AuthRoutes {
     // Add routes here
     router.post("/login", authController.loginUser);
     router.post("/register", authController.registerUser);
+    router.get("/create-password/:token", authController.createPasswordForm)
+    router.post("/generate-password/:token", authController.generatePassword)
 
     return router;
   }

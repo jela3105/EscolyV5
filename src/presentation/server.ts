@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import { buildLogger } from "../config";
 import cors from "cors";
+import path from "path";
 
 interface Options {
   port: number;
@@ -25,6 +26,10 @@ export class Server {
     this.app.use(express.json());
     this.app.use(cors());
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded is postman
+
+    //Views with ejs
+    this.app.set("view engine", "ejs");
+    this.app.set("views", path.join(__dirname, "views"));
 
     //Routes definition
     this.app.use(this.routes);

@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { RegisterUserDTO } from "../../domain/dtos/auth/register-user.dto";
 import { AuthRepository, RegisterUser, LoginUser } from "../../domain";
 import { HttpErrorHandler } from "../errors-handler/http-errors-handler";
-import { JwtAdapter } from "../../config";
+import { envs, JwtAdapter } from "../../config";
 import { LoginUserDTO } from "../../domain/dtos/auth/login-user.dto";
+import path from "path";
 
 export class AuthController {
 
@@ -36,5 +37,21 @@ export class AuthController {
       .then(data => res.json(data))
       .catch(error => HttpErrorHandler.handleError(error, res))
   };
+
+  createPasswordForm = async (req: Request, res: Response) => {
+    const { token } = req.params;
+
+    if (!token) res.status(404).json()
+
+    res.render("create-password", { baseUrl: envs.WEB_SERVICE_URL, token: token })
+  }
+
+  generatePassword = async (req: Request, res: Response) => {
+    const { token } = req.params;
+
+    if (!token) res.status(404).json()
+
+    res.render("close-window");
+  }
 
 }
