@@ -4,12 +4,12 @@ export class TokenService {
 
     constructor(private tokenRepository: TokenRepository) { }
 
-    async invalidateToken(token: string, secondsToExpire: number): Promise<void> {
-        this.tokenRepository.invalidateToken(token, secondsToExpire);
+    async invalidateToken(token: string, expireTime: number): Promise<void> {
+        this.tokenRepository.invalidateToken(token, expireTime);
     }
 
-    async isTokenInvalidated(token: string) {
-        this.tokenRepository.isTokenInvalidated(token);
+    async isTokenInvalidated(token: string): Promise<boolean> {
+        return this.tokenRepository.isTokenInvalidated(token);
     }
 
     async revalidateToken(token: string) {

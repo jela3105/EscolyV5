@@ -75,7 +75,6 @@ export class AuthMiddleware {
     res: Response,
     next: NextFunction
   ) => {
-    //TODO: Validate token never used
     const { token } = req.params;
     try {
 
@@ -85,6 +84,8 @@ export class AuthMiddleware {
         res.status(401).json({ error: "Invalid token" });
         return;
       }
+
+      req.body.payload = payload;
 
       next();
     } catch (error) {

@@ -3,22 +3,26 @@ import { TokenRepository } from "../../domain/repositories/token.repository";
 export class InMemoryTokenRepository implements TokenRepository {
   private invalidTokens = new Map<string, NodeJS.Timeout>();
 
-  async invalidateToken(token: string, expiresInSeconds: number): Promise<void> {
-    if (this.invalidTokens.has(token)) return; 
+  async invalidateToken(token: string, expireTime: number): Promise<void> {
+    if (this.invalidTokens.has(token)) return;
 
-    // Set timeout to automatically remove the token when it expires
-    const timeout = setTimeout(() => {
-      this.invalidTokens.delete(token);
-    }, expiresInSeconds * 1000);return
+    const currentTime = Math.floor(Date.now() / 1000);
+    const expiresInSeconds = expireTime - currentTime;
 
-    this.invalidTokens.set(token, timeout);
+    if (expiresInSeconds > 0) {
+      const timeout = setTimeout(() => {
+        this.invalidTokens.delete(token);
+      }, expiresInSeconds * 1000);
+
+      this.invalidTokens.set(token, timeout);
+    }
   }
 
   async isTokenInvalidated(token: string): Promise<boolean> {
     return this.invalidTokens.has(token);
   }
 
-  async revalidateToken(token: string): Promise<boolean>{
+  async revalidateToken(token: string): Promise<boolean> {
     return this.invalidTokens.delete(token);
   }
 

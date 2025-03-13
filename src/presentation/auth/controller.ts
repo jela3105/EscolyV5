@@ -46,17 +46,23 @@ export class AuthController {
 
     if (!token) res.status(404).json()
 
+    const isTokenInvalidated = await this.tokenService.isTokenInvalidated(token);
+
+    if (isTokenInvalidated) {
+      res.status(401).json("Invalid token")
+      return;
+    }
+
     res.render("create-password", { baseUrl: envs.WEB_SERVICE_URL, token: token })
   }
 
   generatePassword = async (req: Request, res: Response) => {
-
-    //TODO: Invalidate token
-
+    const { payload } = req.body;
     const { token } = req.params;
 
     if (!token) res.status(404).json()
 
+    await this.tokenService.invalidateToken(token, payload.exp);
     res.render("close-window");
   }
 

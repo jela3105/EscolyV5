@@ -35,7 +35,7 @@ export class RegisterTeacher implements RegisterTeacerUserCase {
 
     //TODO: Convert to send email user case
     private async sendEmailToCreatePassword(email: string) {
-        const token = await JwtAdapter.generateToken({ email });
+        const token = await JwtAdapter.generateToken({ email }, 86400);
 
         if (!token) throw HttpError.internalServerError('Error generating token');
 
