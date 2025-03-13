@@ -5,23 +5,39 @@ import { AdminController } from "./controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";
 import { envs } from "../../config";
+import { TokenRepository } from "../../domain/repositories/token.repository";
 
 export class AdminRoutes {
 
-  static get routes(): Router {
+  private static router: Router;
+  private static adminController: AdminController;
+
+  static initialize(tokenRepository: TokenRepository) {
+
+    if (!AdminRoutes.adminController) {
+      const database = new AdminDatasourceImpl();
+
+      //TODO: Add envs to NodeMailerService
+      const emailService = new NodeMailerService();
+
+      const adminRepository = new AdminRepositoryImpl(database);
+      AdminRoutes.adminController = new AdminController(adminRepository, emailService, envs.WEB_SERVICE_URL);
+    }
+
     const router = Router();
-
-    const database = new AdminDatasourceImpl();
-    //TODO: Add envs to NodeMailerService
-    const emailService = new NodeMailerService();
-
-    const adminRepository = new AdminRepositoryImpl(database);
-    const adminController = new AdminController(adminRepository, emailService, envs.WEB_SERVICE_URL);
-
     // Add routes here
-    router.get("/teachers", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], adminController.getTeachers);
-    router.post("/teachers/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], adminController.registerTeacher);
+    router.get("/teachers", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.getTeachers);
+    router.post("/teachers/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.registerTeacher);
 
-    return router;
+    AdminRoutes.router = router;
+  }
+
+  //TODO Refactor to acept dependencies
+  static get routes(): Router {
+    if(!AdminRoutes.router){
+      throw new Error("AdminRoutes not initialized. Call AuthRoutes.initialize() first")
+    }
+
+    return AdminRoutes.router;
   }
 }

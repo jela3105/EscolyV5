@@ -10,6 +10,7 @@ export class AppRoutes {
 
     const tokenRepository = new InMemoryTokenRepository();
     AuthRoutes.initialize(tokenRepository)
+    AdminRoutes.initialize(tokenRepository)
 
     // Add your routes here
     router.use('/api/auth', AuthRoutes.routes);
