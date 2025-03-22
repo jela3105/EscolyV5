@@ -39,7 +39,6 @@ export class AdminRoutes {
     AdminRoutes.router = router;
   }
 
-  //TODO Refactor to acept dependencies
   static get routes(): Router {
     if (!AdminRoutes.router) {
       throw new Error("AdminRoutes not initialized. Call AuthRoutes.initialize() first")
