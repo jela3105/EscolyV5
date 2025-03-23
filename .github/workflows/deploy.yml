@@ -44,4 +44,4 @@ jobs:
         run: echo "RAILWAY_TOKEN=${{ secrets.RAILWAY_API_TOKEN }}" >> $GITHUB_ENV
 
       - name: Deploy to Railway (Docker)
-        run: railway up -- --project ${{ secrets.RAILWAY_PROJECT_ID }} --service escoly-api
+        run: railway up --project ${{ secrets.RAILWAY_PROJECT_ID }} --service escoly-api
