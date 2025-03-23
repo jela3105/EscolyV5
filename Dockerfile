@@ -1,35 +1,25 @@
-# Build stage 
+# Build stage
 FROM node:20 AS builder
 
-# copy workdirectory 
 WORKDIR /app
 
-# copy dependencies
 COPY package*.json ./
+RUN npm install  
 
-# install dependiencies 
-RUN npm install
-
-# copy code 
 COPY . .
-
-# compile typescript 
 RUN npm run build
 
-# production stage 
-FROM node:20
+# Production stage
+FROM node:20 AS production
 
 WORKDIR /app
 
-# copy necessary from previous stage 
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+COPY package-lock.json ./
 
-# just install production dependencies 
 RUN npm install --only=production
 
-# Exponer puerto (Render puede configurarlo dinámicamente, pero opcionalmente puedes usar 3000 si así lo deseas)
-EXPOSE 3000
+COPY --from=builder /app/dist ./dist
 
-# Iniciar la app
+EXPOSE 3000
 CMD ["node", "dist/app.js"]

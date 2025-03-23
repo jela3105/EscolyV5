@@ -1,6 +1,6 @@
-...
-.gitignore
+node_modules
+dist
+test
+coverage
 .env
-node_modules/
-mysql_data/
-dist/
+.git
