@@ -17,7 +17,6 @@ export class AdminRoutes {
     if (!AdminRoutes.adminController) {
       const database = new AdminDatasourceImpl();
 
-      //TODO: Add envs to NodeMailerService
       const emailService = new NodeMailerService();
 
       const url = envs.WEB_SERVICE_URL;

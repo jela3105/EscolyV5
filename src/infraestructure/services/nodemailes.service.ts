@@ -6,8 +6,8 @@ import { EmailConfigService } from "../../config/email-service";
 export class NodeMailerService implements EmailService {
     private transporter: Transporter;
 
-    constructor() {
-        const emailConfig = EmailConfigService.getInstance().getConfig()
+    constructor(emailConfigService: EmailConfigService = EmailConfigService.getInstance()) {
+        const emailConfig = emailConfigService.getConfig()
 
         this.transporter = createTransport({
             service: emailConfig.service,

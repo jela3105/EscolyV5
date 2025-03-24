@@ -31,7 +31,7 @@ export class AuthRoutes {
 
     // Add routes here
     router.post("/login", AuthRoutes.authController.loginUser);
-    router.post("/register", AuthRoutes.authController.registerUser);
+    //router.post("/register", AuthRoutes.authController.registerUser);
     router.get("/create-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.createPasswordForm)
     router.post("/generate-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.generatePassword)
 
