@@ -47,7 +47,6 @@ export class AdminController {
             adminRepository: this.adminRepository,
             emailService: this.emailService,
             url: this.url,
-            tokenRepository: this.tokenRepository
         })
             .execute(registerTeacherDto!)
             .then((data) => res.json(data))
