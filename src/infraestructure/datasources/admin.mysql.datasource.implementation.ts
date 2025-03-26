@@ -6,6 +6,8 @@ import { buildLogger } from "../../config/logger";
 import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto";
 import { RoleEntity } from "../../domain/entities/role.entity";
 import { RoleEnum } from "../../domain/enums/role.enum";
+import { GroupEntity } from "../../domain/entities/group.entity";
+import { GroupEntityMapper } from "../mappers/group.mapper";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -18,6 +20,18 @@ export class AdminDatasourceImpl implements AdminDataSource {
     private logger = buildLogger("AdminDatasourceImpl");
 
     constructor() { }
+
+    async getGroups(): Promise<GroupEntity[]> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+            const [rows]: [any[], any] = await pool.query("select concat(names,' ' , mothersLastName, ' ', fathersLastName) teacher, Yearr, groupName, groupId from User natural join Groupp order by Yearr");
+
+            return rows.map((group) => GroupEntityMapper.groupEntityFromObject(group));
+        } catch (error) {
+            this.logger.error(`${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
 
     async getTeachers(): Promise<UserEntity[]> {
         try {
@@ -70,4 +84,6 @@ export class AdminDatasourceImpl implements AdminDataSource {
             throw HttpError.internalServerError();
         }
     }
+
+
 }

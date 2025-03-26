@@ -5,6 +5,7 @@ import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto
 import { RegisterTeacher } from "../../domain/use-cases/admin/register-teacher.user-case";
 import { EmailService } from "../../domain/services/email/email.service";
 import { TokenRepository } from "../../domain/repositories/token.repository";
+import { ShowGroups } from "../../domain/use-cases/admin/show-groups.user-case";
 
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
@@ -51,5 +52,16 @@ export class AdminController {
             .execute(registerTeacherDto!)
             .then((data) => res.json(data))
             .catch((error) => HttpErrorHandler.handleError(error, res));
+    };
+
+    getGroups = (req: Request, res: Response) => {
+        new ShowGroups(this.adminRepository)
+            .execute()
+            .then((data) => res.json(data))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    };
+
+    registerGroup = (req: Request, res: Response) => {
+        res.json({ message: "registerGroup" });
     };
 }

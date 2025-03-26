@@ -34,6 +34,8 @@ export class AdminRoutes {
     // Add routes here
     router.get("/teachers", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.getTeachers);
     router.post("/teachers/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.registerTeacher);
+    router.get("/groups", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.getGroups);
+    router.post("/groups/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.registerGroup);
 
     AdminRoutes.router = router;
   }
