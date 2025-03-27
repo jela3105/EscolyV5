@@ -25,7 +25,9 @@ export class AdminDatasourceImpl implements AdminDataSource {
     async getGroups(): Promise<GroupEntity[]> {
         try {
             const pool = await MysqlDatabase.getPoolInstance();
-            const [rows]: [any[], any] = await pool.query("select concat(names,' ' , mothersLastName, ' ', fathersLastName) teacher, Yearr, groupName, groupId from User natural join Groupp order by Yearr");
+            const [rows]: [any[], any] = await pool.query(
+                "SELECT concat(names,' ' , mothersLastName, ' ', fathersLastName) teacher, Yearr, groupName, groupId from Groupp left join User on User.userId = Groupp.userId ORDER BY Yearr"
+            );
 
             return rows.map((group) => GroupEntityMapper.groupEntityFromObject(group));
         } catch (error) {
@@ -54,7 +56,7 @@ export class AdminDatasourceImpl implements AdminDataSource {
 
             const [rows]: [any[], any] = await pool.execute(
                 "INSERT INTO Groupp (groupName, Yearr) VALUES (?, ?)",
-                [year, name]
+                [name, year]
             )
 
         } catch (error) {

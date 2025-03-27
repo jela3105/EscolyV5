@@ -1,5 +1,4 @@
 import { RegisterGroupDTO } from "../../dtos/admin/register-group.dto";
-import { GroupEntity } from "../../entities/group.entity";
 import { AdminRepository } from "../../repositories/admin.repository";
 
 abstract class RegisterGroupUseCase {

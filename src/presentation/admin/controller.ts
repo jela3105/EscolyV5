@@ -73,7 +73,7 @@ export class AdminController {
 
         new RegisterGroup(this.adminRepository)
             .excecute(registerGroupDTO!)
-            .then((data) => res.json(data))
+            .then(() => res.sendStatus(201))
             .catch((error) => HttpErrorHandler.handleError(error, res))
     };
 }
