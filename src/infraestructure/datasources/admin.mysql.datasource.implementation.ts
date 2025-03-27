@@ -8,6 +8,7 @@ import { RoleEntity } from "../../domain/entities/role.entity";
 import { RoleEnum } from "../../domain/enums/role.enum";
 import { GroupEntity } from "../../domain/entities/group.entity";
 import { GroupEntityMapper } from "../mappers/group.mapper";
+import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -45,6 +46,28 @@ export class AdminDatasourceImpl implements AdminDataSource {
         }
     }
 
+    async registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {
+        const { year, name } = registerGroupDTO;
+
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+
+            const [rows]: [any[], any] = await pool.execute(
+                "INSERT INTO Groupp (groupName, Yearr) VALUES (?, ?)",
+                [year, name]
+            )
+
+        } catch (error) {
+
+            if (error instanceof HttpError) {
+                throw error;
+            }
+
+            this.logger.error(`${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
     async registerTeacher(registerTeacherDto: RegisterTeacherDTO): Promise<any> {
 
         const { email, names, fathersLastName, mothersLastName } = registerTeacherDto;
@@ -76,6 +99,7 @@ export class AdminDatasourceImpl implements AdminDataSource {
 
             return UserEntityMapper.userEntityFromObject(userInserted[0]);
         } catch (error) {
+
             if (error instanceof HttpError) {
                 throw error;
             }

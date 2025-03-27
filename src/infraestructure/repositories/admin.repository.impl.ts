@@ -4,6 +4,7 @@ import { AdminDataSource } from "../../domain/datasources/admin.datasource";
 import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto";
 import { AdminRepository } from "../../domain/repositories/admin.repository";
 import { GroupEntity } from "../../domain/entities/group.entity";
+import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 
 export class AdminRepositoryImpl implements AdminRepository {
 
@@ -21,5 +22,9 @@ export class AdminRepositoryImpl implements AdminRepository {
 
     getGroups(): Promise<GroupEntity[]> {
         return this.datasource.getGroups();
+    }
+
+    registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {
+       return this.datasource.registerGroup(registerGroupDTO);
     }
 }
