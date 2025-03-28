@@ -1,6 +1,6 @@
 import { Validators } from "../../../config/validators";
 
-export class RegisterTeacherDTO {
+export class RegisterUserDTO {
     private constructor(
         //TODO: Receive group id
         public email: string,
@@ -9,7 +9,7 @@ export class RegisterTeacherDTO {
         public mothersLastName: string
     ) { }
 
-    static create(object: { [key: string]: any; }): [string?, RegisterTeacherDTO?] {
+    static create(object: { [key: string]: any; }): [string?, RegisterUserDTO?] {
 
         const {
             email,
@@ -26,7 +26,7 @@ export class RegisterTeacherDTO {
 
         return [
             undefined,
-            new RegisterTeacherDTO(
+            new RegisterUserDTO(
                 email.toLowerCase(),
                 names,
                 fathersLastName,

@@ -1,10 +1,11 @@
 import { register } from "module";
 import { UserEntity } from "../../domain";
 import { AdminDataSource } from "../../domain/datasources/admin.datasource";
-import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto";
+import { RegisterUserDTO } from "../../domain/dtos/admin/register-teacher.dto";
 import { AdminRepository } from "../../domain/repositories/admin.repository";
 import { GroupEntity } from "../../domain/entities/group.entity";
 import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
+import { RoleEnum } from "../../domain/enums/role.enum";
 
 export class AdminRepositoryImpl implements AdminRepository {
 
@@ -16,8 +17,8 @@ export class AdminRepositoryImpl implements AdminRepository {
         return this.datasource.getTeachers();
     }
 
-    registerTeacher(registerTeacherDto: RegisterTeacherDTO): Promise<UserEntity> {
-        return this.datasource.registerTeacher(registerTeacherDto);
+    registerUser(registerUserDTO: RegisterUserDTO, role: RoleEnum): Promise<UserEntity> {
+        return this.datasource.registerUser(registerUserDTO, role);
     }
 
     getGroups(): Promise<GroupEntity[]> {
@@ -25,6 +26,6 @@ export class AdminRepositoryImpl implements AdminRepository {
     }
 
     registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {
-       return this.datasource.registerGroup(registerGroupDTO);
+        return this.datasource.registerGroup(registerGroupDTO);
     }
 }

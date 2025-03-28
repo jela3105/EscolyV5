@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { AdminRepository, ShowTeachers } from "../../domain";
 import { HttpErrorHandler } from "../errors-handler/http-errors-handler";
-import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto";
-import { RegisterTeacher } from "../../domain/use-cases/admin/register-teacher.user-case";
+import { RegisterUserDTO } from "../../domain/dtos/admin/register-teacher.dto";
+import { RegisterUser } from "../../domain/use-cases/admin/register-teacher.user-case";
 import { EmailService } from "../../domain/services/email/email.service";
 import { TokenRepository } from "../../domain/repositories/token.repository";
 import { ShowGroups } from "../../domain/use-cases/admin/show-groups.user-case";
 import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 import { RegisterGroup } from "../../domain/use-cases/admin/register-group.user-case";
+import { RoleEnum } from "../../domain/enums/role.enum";
 
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
@@ -38,20 +39,24 @@ export class AdminController {
             .catch((error) => HttpErrorHandler.handleError(error, res));
     };
 
-    registerTeacher = (req: Request, res: Response) => {
-        const [error, registerTeacherDto] = RegisterTeacherDTO.create(req.body);
+    registerAdmin = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.ADMIN);
+    registerTeacher = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.TEACHER);
+    registerGuardian = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.GUARDIAN);
+
+    registerUser = (req: Request, res: Response, role: RoleEnum) => {
+        const [error, registerUserDto] = RegisterUserDTO.create(req.body);
 
         if (error) {
             res.status(400).json({ error });
             return;
         }
 
-        new RegisterTeacher({
+        new RegisterUser({
             adminRepository: this.adminRepository,
             emailService: this.emailService,
             url: this.url,
         })
-            .execute(registerTeacherDto!)
+            .execute(registerUserDto!, role)
             .then((data) => res.json(data))
             .catch((error) => HttpErrorHandler.handleError(error, res));
     };

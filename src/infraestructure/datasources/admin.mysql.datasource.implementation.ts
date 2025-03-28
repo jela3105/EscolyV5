@@ -3,7 +3,7 @@ import { HttpError, UserEntity } from "../../domain";
 import { AdminDataSource } from "../../domain/datasources/admin.datasource";
 import { UserEntityMapper } from "../mappers/user.mapper";
 import { buildLogger } from "../../config/logger";
-import { RegisterTeacherDTO } from "../../domain/dtos/admin/register-teacher.dto";
+import { RegisterUserDTO } from "../../domain/dtos/admin/register-teacher.dto";
 import { RoleEntity } from "../../domain/entities/role.entity";
 import { RoleEnum } from "../../domain/enums/role.enum";
 import { GroupEntity } from "../../domain/entities/group.entity";
@@ -70,9 +70,9 @@ export class AdminDatasourceImpl implements AdminDataSource {
         }
     }
 
-    async registerTeacher(registerTeacherDto: RegisterTeacherDTO): Promise<any> {
+    async registerUser(registerUserDTO: RegisterUserDTO, role: RoleEnum): Promise<any> {
 
-        const { email, names, fathersLastName, mothersLastName } = registerTeacherDto;
+        const { email, names, fathersLastName, mothersLastName } = registerUserDTO;
 
         try {
             const pool = await MysqlDatabase.getPoolInstance();
@@ -87,7 +87,7 @@ export class AdminDatasourceImpl implements AdminDataSource {
             await pool.execute(
                 "INSERT INTO User (roleId, names, fathersLastName, mothersLastName, email) VALUES (?, ?, ?, ?, ?)",
                 [
-                    RoleEntity.fromEnum(RoleEnum.TEACHER).roleNumber,
+                    RoleEntity.fromEnum(role).roleNumber,
                     names,
                     fathersLastName,
                     mothersLastName,
