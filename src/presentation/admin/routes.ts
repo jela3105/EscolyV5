@@ -32,12 +32,13 @@ export class AdminRoutes {
 
     const router = Router();
     // Add routes here
-    router.get("/teachers", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.getTeachers);
-    router.post("/teachers/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.registerTeacher);
-    router.post("/guardian/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.registerGuardian);
-    router.post("/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.registerAdmin);
-    router.get("/groups", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.getGroups);
-    router.post("/groups/register", [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.adminController.registerGroup);
+    router.get("/teachers", AdminRoutes.adminController.getTeachers);
+    router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
+    router.post("/guardian/register", AdminRoutes.adminController.registerGuardian);
+    router.post("/guardians", AdminRoutes.adminController.getGuardians);
+    router.post("/register", AdminRoutes.adminController.registerAdmin);
+    router.get("/groups", AdminRoutes.adminController.getGroups);
+    router.post("/groups/register", AdminRoutes.adminController.registerGroup);
 
     AdminRoutes.router = router;
   }

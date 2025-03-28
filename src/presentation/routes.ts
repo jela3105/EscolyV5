@@ -14,8 +14,8 @@ export class AppRoutes {
     AdminRoutes.initialize(tokenRepository)
 
     // Add your routes here
-    router.use('/api/auth', AuthRoutes.routes);
-    router.use('/api/admin', AdminRoutes.routes)
+    router.use('/auth', AuthRoutes.routes);
+    router.use('/admin', [AuthMiddleware.validateJWT, AuthMiddleware.isAdmin], AdminRoutes.routes)
 
     return router;
   }

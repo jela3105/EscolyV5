@@ -77,6 +77,10 @@ export class AdminController {
             .catch((error) => HttpErrorHandler.handleError(error, res));
     };
 
+    getGuardians = (req: Request, res: Response) => {
+
+    };
+
     getTeachers = (req: Request, res: Response) => {
         new ShowTeachers(this.adminRepository)
             .execute()
