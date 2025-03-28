@@ -32,16 +32,25 @@ export class AdminController {
         this.tokenRepository = tokenRepository;
     }
 
-    getTeachers = (req: Request, res: Response) => {
-        new ShowTeachers(this.adminRepository)
-            .execute()
-            .then((data) => res.json(data))
-            .catch((error) => HttpErrorHandler.handleError(error, res));
+    registerAdmin = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.ADMIN);
+
+    registerGroup = (req: Request, res: Response) => {
+        const [error, registerGroupDTO] = RegisterGroupDTO.create(req.body);
+
+        if (error) {
+            res.status(400).json({ error })
+            return;
+        }
+
+        new RegisterGroup(this.adminRepository)
+            .excecute(registerGroupDTO!)
+            .then(() => res.sendStatus(201))
+            .catch((error) => HttpErrorHandler.handleError(error, res))
     };
 
-    registerAdmin = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.ADMIN);
-    registerTeacher = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.TEACHER);
     registerGuardian = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.GUARDIAN);
+
+    registerTeacher = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.TEACHER);
 
     registerUser = (req: Request, res: Response, role: RoleEnum) => {
         const [error, registerUserDto] = RegisterUserDTO.create(req.body);
@@ -68,17 +77,11 @@ export class AdminController {
             .catch((error) => HttpErrorHandler.handleError(error, res));
     };
 
-    registerGroup = (req: Request, res: Response) => {
-        const [error, registerGroupDTO] = RegisterGroupDTO.create(req.body);
-
-        if (error) {
-            res.status(400).json({ error })
-            return;
-        }
-
-        new RegisterGroup(this.adminRepository)
-            .excecute(registerGroupDTO!)
-            .then(() => res.sendStatus(201))
-            .catch((error) => HttpErrorHandler.handleError(error, res))
+    getTeachers = (req: Request, res: Response) => {
+        new ShowTeachers(this.adminRepository)
+            .execute()
+            .then((data) => res.json(data))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
     };
+
 }
