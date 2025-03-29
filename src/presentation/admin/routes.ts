@@ -32,7 +32,6 @@ export class AdminRoutes {
     const router = Router();
 
     router.get("/admins", AdminRoutes.adminController.getAdmins)
-    router.post("/admins/register", AdminRoutes.adminController.registerAdmin)
 
     router.get("/guardians", AdminRoutes.adminController.getGuardians);
     router.post("/guardian/register", AdminRoutes.adminController.registerGuardian);
