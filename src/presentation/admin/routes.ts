@@ -30,15 +30,19 @@ export class AdminRoutes {
     }
 
     const router = Router();
-    // Add routes here
+
     router.get("/admins", AdminRoutes.adminController.getAdmins)
-    router.get("/teachers", AdminRoutes.adminController.getTeachers);
-    router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
-    router.post("/guardian/register", AdminRoutes.adminController.registerGuardian);
+
     router.get("/guardians", AdminRoutes.adminController.getGuardians);
-    router.post("/register", AdminRoutes.adminController.registerAdmin);
+    router.post("/guardian/register", AdminRoutes.adminController.registerGuardian);
+
     router.get("/groups", AdminRoutes.adminController.getGroups);
     router.post("/groups/register", AdminRoutes.adminController.registerGroup);
+
+    router.post("/register", AdminRoutes.adminController.registerAdmin);
+
+    router.get("/teachers", AdminRoutes.adminController.getTeachers);
+    router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
 
     AdminRoutes.router = router;
   }
