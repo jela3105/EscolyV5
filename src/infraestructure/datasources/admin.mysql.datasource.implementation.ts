@@ -36,10 +36,10 @@ export class AdminDatasourceImpl implements AdminDataSource {
         }
     }
 
-    async getTeachers(): Promise<UserEntity[]> {
+    async getUsers(role: RoleEnum): Promise<UserEntity[]> {
         try {
             const pool = await MysqlDatabase.getPoolInstance();
-            const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE roleId = 2");
+            const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE roleId = ?", [role]);
 
             return rows.map((user) => UserEntityMapper.userEntityFromObject(user));
         } catch (error) {

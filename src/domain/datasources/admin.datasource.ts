@@ -6,7 +6,7 @@ import { RoleEnum } from "../enums/role.enum";
 
 export abstract class AdminDataSource {
     abstract getGroups(): Promise<GroupEntity[]>;
-    abstract getTeachers(): Promise<UserEntity[]>;
+    abstract getUsers(role: RoleEnum): Promise<UserEntity[]>;
     abstract registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void>
     abstract registerUser(registerUserDTO: RegisterUserDTO, role: RoleEnum): Promise<UserEntity>
 }

@@ -5,7 +5,7 @@ import { UserEntity } from "../entities/user.entity";
 import { RoleEnum } from "../enums/role.enum";
 
 export abstract class AdminRepository {
-  abstract getTeachers(): Promise<UserEntity[]>;
+  abstract getUsers(role: RoleEnum): Promise<UserEntity[]>;
   abstract registerUser(registerTeacherDto: RegisterUserDTO, role: RoleEnum): Promise<UserEntity>
   abstract getGroups(): Promise<GroupEntity[]>;
   abstract registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void>

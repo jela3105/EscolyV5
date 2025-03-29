@@ -2,7 +2,6 @@ import { Router } from "express";
 import { AdminDatasourceImpl } from "../../infraestructure/datasources/admin.mysql.datasource.implementation";
 import { AdminRepositoryImpl } from "../../infraestructure";
 import { AdminController } from "./controller";
-import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";
 import { envs } from "../../config";
 import { TokenRepository } from "../../domain/repositories/token.repository";
@@ -32,10 +31,11 @@ export class AdminRoutes {
 
     const router = Router();
     // Add routes here
+    router.get("/admins", AdminRoutes.adminController.getAdmins)
     router.get("/teachers", AdminRoutes.adminController.getTeachers);
     router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
     router.post("/guardian/register", AdminRoutes.adminController.registerGuardian);
-    router.post("/guardians", AdminRoutes.adminController.getGuardians);
+    router.get("/guardians", AdminRoutes.adminController.getGuardians);
     router.post("/register", AdminRoutes.adminController.registerAdmin);
     router.get("/groups", AdminRoutes.adminController.getGroups);
     router.post("/groups/register", AdminRoutes.adminController.registerGroup);

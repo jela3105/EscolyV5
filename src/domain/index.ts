@@ -11,4 +11,4 @@ export * from "./repositories/auth.repository";
 
 export * from "./use-cases/auth/register-user.user-case";
 export * from "./use-cases/auth/login-user.user-case";
-export * from "./use-cases/admin/show-teachers.user-case"
+export * from "./use-cases/admin/show-users.user-case"
