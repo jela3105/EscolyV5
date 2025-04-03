@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AdminRepository, ShowUsers } from "../../domain";
 import { HttpErrorHandler } from "../errors-handler/http-errors-handler";
 import { RegisterUserDTO } from "../../domain/dtos/admin/register-teacher.dto";
-import { RegisterUser } from "../../domain/use-cases/admin/register-teacher.user-case";
+import { RegisterUser } from "../../domain/use-cases/admin/register-user.user-case";
 import { EmailService } from "../../domain/services/email/email.service";
 import { TokenRepository } from "../../domain/repositories/token.repository";
 import { ShowGroups } from "../../domain/use-cases/admin/show-groups.user-case";
