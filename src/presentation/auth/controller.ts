@@ -82,7 +82,7 @@ export class AuthController {
 
     if (!Validators.email.test(email)) res.status(400).json("Invalid Email");
 
-    await new ForgetPasswordEmail(this.emailService, this.url)
+    await new ForgetPasswordEmail(this.emailService, this.url, this.authRepository)
       .execute(email)
       .then(() => res.status(200).json("Send email correcly"))
       .catch(error => HttpErrorHandler.handleError(error, res))

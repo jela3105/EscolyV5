@@ -3,6 +3,7 @@ import { JwtAdapter } from "../../../config";
 import { HttpError } from "../../errors/http.error";
 import { EmailService } from "../../services/email/email.service";
 import { SentEmail } from "../email/sent-email.user-case";
+import { AuthRepository } from "../../repositories/auth.repository";
 
 abstract class ForgetPasswordEmailUseCase {
     abstract execute(email: string): Promise<void>;
@@ -10,19 +11,17 @@ abstract class ForgetPasswordEmailUseCase {
 
 export class ForgetPasswordEmail implements ForgetPasswordEmailUseCase {
 
-
-    private readonly emailService: EmailService;
-    private readonly url: string;
-
-
-    constructor(emailService: EmailService, url: string) {
-        this.emailService = emailService;
-        this.url = url;
+    constructor(
+        private readonly emailService: EmailService,
+        private readonly url: string,
+        private readonly authRepository: AuthRepository
+    ) {
     }
 
     async execute(email: string): Promise<void> {
 
-        //TODO: Validate user exists before sending email
+        const user = await this.authRepository.userExists(email);
+        if (!user) throw HttpError.notFound("User not found")
 
         const token = await JwtAdapter.generateToken({ email });
         if (!token) throw HttpError.internalServerError('Error generating token');

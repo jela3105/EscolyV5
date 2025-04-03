@@ -131,4 +131,14 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       throw HttpError.internalServerError();
     }
   }
+
+  async userExists(email: string): Promise<boolean> {
+    const pool = await MysqlDatabase.getPoolInstance();
+    const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE email = ?", [email]);
+
+    if (rows.length != 0) {
+      return true;
+    }
+    return false;
+  }
 }

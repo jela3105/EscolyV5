@@ -7,4 +7,5 @@ export abstract class AuthRepository {
   abstract register(registerUserDTO: RegisterUserDTO): Promise<UserEntity>;
   abstract createUserPassword(email: string, password: string): Promise<void>
   abstract recoverUserPassword(email: string, password: string): Promise<void>
+  abstract userExists(email: string): Promise<boolean>
 }

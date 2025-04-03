@@ -22,4 +22,8 @@ export class AuthRepositoryImpl implements AuthRepository {
     recoverUserPassword(email: string, password: string): Promise<void> {
         return this.datasource.recoverUserPassword(email, password);
     }
+
+    userExists(email: string): Promise<boolean> {
+        return this.datasource.userExists(email);
+    }
 }
