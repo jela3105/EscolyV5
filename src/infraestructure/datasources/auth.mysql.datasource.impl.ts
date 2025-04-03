@@ -113,4 +113,22 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       throw HttpError.internalServerError();
     }
   }
+
+  async recoverUserPassword(email: string, password: string): Promise<void> {
+
+    try {
+
+      const pool = await MysqlDatabase.getPoolInstance();
+      await pool.execute("UPDATE User SET password = ? WHERE email = ?", [this.hashFunction(password), email])
+
+    } catch (error) {
+
+      if (error instanceof HttpError) {
+        throw error;
+      }
+
+      this.logger.error(`${error}`);
+      throw HttpError.internalServerError();
+    }
+  }
 }

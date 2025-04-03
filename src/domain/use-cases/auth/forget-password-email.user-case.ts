@@ -21,6 +21,9 @@ export class ForgetPasswordEmail implements ForgetPasswordEmailUseCase {
     }
 
     async execute(email: string): Promise<void> {
+
+        //TODO: Validate user exists before sending email
+
         const token = await JwtAdapter.generateToken({ email });
         if (!token) throw HttpError.internalServerError('Error generating token');
         const link = `${this.url}/auth/change-password/${token}`;

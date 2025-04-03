@@ -34,10 +34,12 @@ export class AuthRoutes {
 
     // Add routes here
     router.post("/login", AuthRoutes.authController.loginUser);
-    router.get("/password", AuthRoutes.authController.forgetPassword);
     //router.post("/register", AuthRoutes.authController.registerUser);
     router.get("/create-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.createPasswordForm)
     router.post("/generate-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.generatePassword)
+    router.get("/password", AuthRoutes.authController.forgetPassword);
+    router.get("/change-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPasswordForm);
+    router.post("/recover-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPassword);
 
     AuthRoutes.router = router;
 

@@ -6,6 +6,7 @@ export abstract class AuthDataSource {
 
     abstract login(loginUserDTO: LoginUserDTO): Promise<UserEntity>;
     abstract register(registerUserDTO: RegisterUserDTO): Promise<UserEntity>;
-    abstract createUserPassword(email: string, password:string): Promise<void>;
+    abstract createUserPassword(email: string, password: string): Promise<void>;
+    abstract recoverUserPassword(email: string, password: string): Promise<void>;
 
 }
