@@ -7,7 +7,7 @@ export class JwtAdapter {
 
   static async generateToken(
     payload: Object,
-    duration: number = 7200 // duration in seconds
+    duration: number = 60 * 30 // duration in seconds
   ): Promise<string | null> {
 
     return new Promise((resolve) => {
