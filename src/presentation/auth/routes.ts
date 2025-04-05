@@ -40,6 +40,7 @@ export class AuthRoutes {
     router.get("/password", AuthRoutes.authController.forgetPassword);
     router.get("/change-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPasswordForm);
     router.post("/recover-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPassword);
+    router.put("/change-password", [AuthMiddleware.validateJWT], AuthRoutes.authController.changePassword);
 
     AuthRoutes.router = router;
 

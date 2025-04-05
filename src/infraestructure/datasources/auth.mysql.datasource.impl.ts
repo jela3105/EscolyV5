@@ -6,6 +6,7 @@ import {
   RegisterUserDTO,
   UserEntity,
 } from "../../domain";
+import { ChangePasswordDTO } from "../../domain/dtos/auth/change-password.dto";
 import { LoginUserDTO } from "../../domain/dtos/auth/login-user.dto";
 import { RoleEntity } from "../../domain/entities/role.entity";
 import { RoleEnum } from "../../domain/enums/role.enum";
@@ -140,5 +141,26 @@ export class AuthMysqlDatasourceImpl implements AuthDataSource {
       return true;
     }
     return false;
+  }
+
+  async updatePassword(email: string, currentPassword: string, changePasswordDTO: ChangePasswordDTO): Promise<void> {
+
+    if (!this.compareFunction(changePasswordDTO.currentPassword, currentPassword)) {
+      throw HttpError.unauthorized("Current password is incorrect");
+    }
+
+    try {
+      const pool = await MysqlDatabase.getPoolInstance();
+      await pool.execute("UPDATE User SET password = ? WHERE email = ?", [this.hashFunction(changePasswordDTO.newPassword), email]);
+    } catch (error) {
+
+      if (error instanceof HttpError) {
+        throw error;
+      }
+
+      this.logger.error(`${error}`);
+      throw HttpError.internalServerError();
+    }
+
   }
 }

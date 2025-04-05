@@ -9,6 +9,8 @@ import { CreateUserPassword } from "../../domain/use-cases/auth/create-user-pass
 import { ForgetPasswordEmail } from "../../domain/use-cases/auth/forget-password-email.user-case";
 import { EmailService } from "../../domain/services/email/email.service";
 import { RecoverUserPassword } from "../../domain/use-cases/auth/recover-user-password.user-case";
+import { ChangePasswordDTO } from "../../domain/dtos/auth/change-password.dto";
+import { ChangePassword } from "../../domain/use-cases/auth/change-password.user-case";
 
 export class AuthController {
 
@@ -116,5 +118,26 @@ export class AuthController {
       .catch(error => HttpErrorHandler.handleError(error, res))
 
     res.render("close-window");
+  }
+
+  changePassword = async (req: Request, res: Response) => {
+    const [error, changePasswordDTO] = ChangePasswordDTO.create(req.body);
+
+    if (error) {
+      res.status(400).json({ error });
+      return;
+    }
+
+    const { email, password } = req.body.user
+
+    if (!email) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    await new ChangePassword(this.authRepository)
+      .execute(email, password, changePasswordDTO!)
+      .then(() => res.status(200).json({ message: 'Password changed successfully' }))
+      .catch(error => HttpErrorHandler.handleError(error, res));
   }
 }
