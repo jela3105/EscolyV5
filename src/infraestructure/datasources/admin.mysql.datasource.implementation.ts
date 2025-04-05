@@ -75,8 +75,6 @@ export class AdminDatasourceImpl implements AdminDataSource {
     async registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity> {
         const { names, fathersLastName, mothersLastName, guardians } = registerStudentDTO;
 
-        console.log(JSON.stringify(guardians));
-
         try {
             const pool = await MysqlDatabase.getPoolInstance();
 
