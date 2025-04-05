@@ -9,6 +9,8 @@ import { ShowGroups } from "../../domain/use-cases/admin/show-groups.user-case";
 import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 import { RegisterGroup } from "../../domain/use-cases/admin/register-group.user-case";
 import { RoleEnum } from "../../domain/enums/role.enum";
+import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
+import { RegisterStudent } from "../../domain/use-cases/admin/register-student.user-case";
 
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
@@ -51,6 +53,20 @@ export class AdminController {
     registerGuardian = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.GUARDIAN);
 
     registerTeacher = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.TEACHER);
+
+    registerStudent = (req: Request, res: Response) => {
+        const [error, registerStudentDTO] = RegisterStudentDTO.create(req.body);
+
+        if (error) {
+            res.status(400).json({ error });
+            return;
+        }
+
+        new RegisterStudent(this.adminRepository)
+            .execute(registerStudentDTO!)
+            .then((data) => res.json(data))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
 
     registerUser = (req: Request, res: Response, role: RoleEnum) => {
         const [error, registerUserDto] = RegisterUserDTO.create(req.body);

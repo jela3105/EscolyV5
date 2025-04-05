@@ -9,6 +9,8 @@ import { RoleEnum } from "../../domain/enums/role.enum";
 import { GroupEntity } from "../../domain/entities/group.entity";
 import { GroupEntityMapper } from "../mappers/group.mapper";
 import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
+import { StudentEntity } from "../../domain/entities/student.entity";
+import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -63,6 +65,40 @@ export class AdminDatasourceImpl implements AdminDataSource {
 
             if (error instanceof HttpError) {
                 throw error;
+            }
+
+            this.logger.error(`${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
+    async registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity> {
+        const { names, fathersLastName, mothersLastName, guardians } = registerStudentDTO;
+
+        console.log(JSON.stringify(guardians));
+
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+
+            const [rows]: any = await pool.execute(
+                "CALL CreateStudentWithGuardians(?, ?, ?, ?)",
+                [names, fathersLastName, mothersLastName, JSON.stringify(guardians)]
+            )
+
+            return new StudentEntity(
+                rows[0][0].studentId,
+                null,
+                names,
+                fathersLastName,
+                mothersLastName,
+                guardians
+            )
+
+        } catch (error: any) {
+
+
+            if (error.code == "ER_SIGNAL_EXCEPTION") {
+                throw HttpError.conflict(error.sqlMessage);
             }
 
             this.logger.error(`${error}`);

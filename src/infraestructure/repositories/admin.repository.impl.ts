@@ -6,12 +6,18 @@ import { AdminRepository } from "../../domain/repositories/admin.repository";
 import { GroupEntity } from "../../domain/entities/group.entity";
 import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 import { RoleEnum } from "../../domain/enums/role.enum";
+import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
+import { StudentEntity } from "../../domain/entities/student.entity";
 
 export class AdminRepositoryImpl implements AdminRepository {
 
     constructor(
         private readonly datasource: AdminDataSource
     ) { }
+
+    registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity> {
+        return this.datasource.registerStudent(registerStudentDTO);
+    }
 
     getUsers(role: RoleEnum): Promise<UserEntity[]> {
         return this.datasource.getUsers(role);
