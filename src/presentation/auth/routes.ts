@@ -4,10 +4,11 @@ import {
   AuthMysqlDatasourceImpl,
   AuthRepositoryImpl,
 } from "../../infraestructure";
-import { BcryptAdapter } from "../../config";
+import { BcryptAdapter, envs } from "../../config";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { TokenRepository } from "../../domain/repositories/token.repository";
 import { TokenService } from "../../domain/services/token/token.service";
+import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";
 
 export class AuthRoutes {
 
@@ -23,8 +24,10 @@ export class AuthRoutes {
       );
       const authRepository = new AuthRepositoryImpl(database);
       const tokenService = new TokenService(tokenRepository);
+      const emailService = new NodeMailerService();
+      const url = envs.WEB_SERVICE_URL;
 
-      AuthRoutes.authController = new AuthController(authRepository, tokenService);
+      AuthRoutes.authController = new AuthController(authRepository, tokenService, emailService, url);
     }
 
     const router = Router();
@@ -34,6 +37,10 @@ export class AuthRoutes {
     //router.post("/register", AuthRoutes.authController.registerUser);
     router.get("/create-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.createPasswordForm)
     router.post("/generate-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.generatePassword)
+    router.get("/password", AuthRoutes.authController.forgetPassword);
+    router.get("/change-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPasswordForm);
+    router.post("/recover-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPassword);
+    router.put("/change-password", [AuthMiddleware.validateJWT], AuthRoutes.authController.changePassword);
 
     AuthRoutes.router = router;
 

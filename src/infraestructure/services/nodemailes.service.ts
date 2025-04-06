@@ -1,10 +1,12 @@
 import { Transporter, createTransport } from "nodemailer"
 import { EmailService, SendMailOptions } from "../../domain/services/email/email.service";
 import { EmailConfigService } from "../../config/email-service";
+import { buildLogger } from "../../config";
 
 
 export class NodeMailerService implements EmailService {
     private transporter: Transporter;
+    private logger = buildLogger("NodeMailerService");
 
     constructor(emailConfigService: EmailConfigService = EmailConfigService.getInstance()) {
         const emailConfig = emailConfigService.getConfig()
@@ -31,7 +33,7 @@ export class NodeMailerService implements EmailService {
 
             return true;
         } catch (error: any) {
-            console.error(error)
+            this.logger.error(`Error sending email: ${error}`);
             return false;
         }
     }

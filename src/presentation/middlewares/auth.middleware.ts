@@ -36,10 +36,10 @@ export class AuthMiddleware {
       }
 
       //TODO: Change query to use repository 
-      (await MysqlDatabase.getPoolInstance())
+      await (await MysqlDatabase.getPoolInstance())
         .query("SELECT * FROM User WHERE userId = ?", [payload.id])
-        .then((result) => {
-          req.body.user = result[0];
+        .then((result: any) => {
+          req.body.user = result[0][0];
         });
 
       req.body.payload = payload;
