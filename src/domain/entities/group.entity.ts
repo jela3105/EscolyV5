@@ -3,6 +3,6 @@ export class GroupEntity {
     public groupId: number,
     public year: number,
     public name: string,
-    public teacher: string
+    public teacher: number
   ) { }
 }

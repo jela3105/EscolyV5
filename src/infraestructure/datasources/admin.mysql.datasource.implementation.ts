@@ -28,7 +28,7 @@ export class AdminDatasourceImpl implements AdminDataSource {
         try {
             const pool = await MysqlDatabase.getPoolInstance();
             const [rows]: [any[], any] = await pool.query(
-                "SELECT concat(names,' ' , mothersLastName, ' ', fathersLastName) teacher, Yearr, groupName, groupId from Groupp left join User on User.userId = Groupp.userId ORDER BY Yearr"
+                "SELECT Groupp.userId AS teacher, Yearr, groupName, groupId from Groupp left join User on User.userId = Groupp.userId ORDER BY Yearr"
             );
 
             return rows.map((group) => GroupEntityMapper.groupEntityFromObject(group));
