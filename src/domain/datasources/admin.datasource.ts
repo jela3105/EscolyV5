@@ -12,4 +12,5 @@ export abstract class AdminDataSource {
     abstract registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void>
     abstract registerUser(registerUserDTO: RegisterUserDTO, role: RoleEnum): Promise<UserEntity>
     abstract registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity>
+    abstract getGroupById(id: number): Promise<any>
 }

@@ -36,6 +36,7 @@ export class AdminRoutes {
     router.get("/guardians", AdminRoutes.adminController.getGuardians);
     router.post("/guardian/register", AdminRoutes.adminController.registerGuardian);
 
+    router.get("/group/:id", AdminRoutes.adminController.getGroupDescription)
     router.get("/groups", AdminRoutes.adminController.getGroups);
     router.post("/groups/register", AdminRoutes.adminController.registerGroup);
 
@@ -48,7 +49,6 @@ export class AdminRoutes {
 
     AdminRoutes.router = router;
   }
-
   static get routes(): Router {
     if (!AdminRoutes.router) {
       throw new Error("AdminRoutes not initialized. Call AuthRoutes.initialize() first")

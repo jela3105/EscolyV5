@@ -8,6 +8,7 @@ import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 import { RoleEnum } from "../../domain/enums/role.enum";
 import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
 import { StudentEntity } from "../../domain/entities/student.entity";
+import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
 
 export class AdminRepositoryImpl implements AdminRepository {
 
@@ -29,6 +30,10 @@ export class AdminRepositoryImpl implements AdminRepository {
 
     getGroups(): Promise<GroupEntity[]> {
         return this.datasource.getGroups();
+    }
+
+    getGroupById(id: number): Promise<GroupDescriptionEntity> {
+        return this.datasource.getGroupById(id);
     }
 
     registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {

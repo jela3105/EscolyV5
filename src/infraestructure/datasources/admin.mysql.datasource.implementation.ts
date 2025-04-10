@@ -11,6 +11,7 @@ import { GroupEntityMapper } from "../mappers/group.mapper";
 import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 import { StudentEntity } from "../../domain/entities/student.entity";
 import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
+import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -32,6 +33,36 @@ export class AdminDatasourceImpl implements AdminDataSource {
             );
 
             return rows.map((group) => GroupEntityMapper.groupEntityFromObject(group));
+        } catch (error) {
+            this.logger.error(`${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
+    async getGroupById(id: number): Promise<GroupDescriptionEntity> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+            const [students]: [any[], any] = await pool.query(
+                "SELECT studentId, names, mothersLastName, fathersLastName from Student WHERE groupId = ?", [id]
+            )
+
+            const [teacher]: [any[], any] = await pool.query(
+                "SELECT userId, names, fathersLastName, mothersLastName, Yearr, groupName FROM User NATURAL JOIN Groupp WHERE groupId = ?", [id]
+            );
+
+            return {
+                id,
+                year: teacher[0].Yearr,
+                name: teacher[0].groupName,
+                teacher: {
+                    id: teacher[0].userId,
+                    names: teacher[0].names,
+                    fathersLastName: teacher[0].fathersLastName,
+                    mothersLastName: teacher[0].mothersLastName,
+                },
+                students: students
+            };
+
         } catch (error) {
             this.logger.error(`${error}`);
             throw HttpError.internalServerError();
