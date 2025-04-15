@@ -12,6 +12,7 @@ import { RoleEnum } from "../../domain/enums/role.enum";
 import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
 import { RegisterStudent } from "../../domain/use-cases/admin/register-student.user-case";
 import { ShowGroupById } from "../../domain/use-cases/admin/show-group-by-id.user-case";
+import { ShowStudentInfoById } from "../../domain/use-cases/admin/show-student-info-by-id.user-case";
 
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
@@ -106,6 +107,16 @@ export class AdminController {
     }
 
     getGuardians = (req: Request, res: Response) => this.getUserType(req, res, RoleEnum.GUARDIAN);
+
+    getStudentInfo = (req: Request, res: Response) => {
+        const { id } = req.params;
+        const numericId = Number(id);
+
+        new ShowStudentInfoById(this.adminRepository)
+            .execute(numericId)
+            .then(data => res.json(data))
+            .catch(error => HttpErrorHandler.handleError(error, res))
+    }
 
     getUserType = (req: Request, res: Response, role: RoleEnum) => {
         new ShowUsers(this.adminRepository, role)

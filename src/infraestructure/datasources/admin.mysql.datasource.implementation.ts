@@ -12,6 +12,7 @@ import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 import { StudentEntity } from "../../domain/entities/student.entity";
 import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
 import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
+import { StudentDescriptionEntity } from "../../domain/entities/student-description.entity";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -62,6 +63,45 @@ export class AdminDatasourceImpl implements AdminDataSource {
                 },
                 students: students
             };
+
+        } catch (error) {
+            this.logger.error(`${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
+    async getStudentById(id: number): Promise<StudentDescriptionEntity> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+            const [rows]: [any[], any] = await pool.query(
+                "SELECT studentId, groupId, names, mothersLastName, fathersLastName, Groupp.Yearr, Groupp.groupName FROM Student NATURAL JOIN Groupp WHERE studentId = ?", [id]
+            );
+
+            const student = rows[0];
+
+            if (!student) {
+                throw HttpError.notFound("Student not found");
+            }
+
+            const [guardians]: [any[], any] = await pool.query(
+                "SELECT User.userId, User.names, User.mothersLastName, User.fathersLastName, User.email FROM Guardian NATURAL JOIN User WHERE studentId = ?", [id]
+            )
+            return new StudentDescriptionEntity(
+                student.studentId,
+                student.groupId,
+                student.groupName,
+                student.Yearr,
+                student.names,
+                student.fathersLastName,
+                student.mothersLastName,
+                guardians.map(({ userId, names, fathersLastName, mothersLastName, email }) => ({
+                    id: userId,
+                    names,
+                    fathersLastName,
+                    mothersLastName,
+                    email
+                }))
+            );
 
         } catch (error) {
             this.logger.error(`${error}`);
@@ -175,6 +215,5 @@ export class AdminDatasourceImpl implements AdminDataSource {
             throw HttpError.internalServerError();
         }
     }
-
 
 }

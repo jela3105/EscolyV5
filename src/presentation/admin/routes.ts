@@ -43,6 +43,7 @@ export class AdminRoutes {
     router.post("/register", AdminRoutes.adminController.registerAdmin);
 
     router.post("/students/register", AdminRoutes.adminController.registerStudent);
+    router.get("/student/:id", AdminRoutes.adminController.getStudentInfo)
 
     router.get("/teachers", AdminRoutes.adminController.getTeachers);
     router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);

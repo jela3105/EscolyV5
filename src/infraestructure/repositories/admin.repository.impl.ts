@@ -9,6 +9,7 @@ import { RoleEnum } from "../../domain/enums/role.enum";
 import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
 import { StudentEntity } from "../../domain/entities/student.entity";
 import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
+import { StudentDescriptionEntity } from "../../domain/entities/student-description.entity";
 
 export class AdminRepositoryImpl implements AdminRepository {
 
@@ -38,5 +39,9 @@ export class AdminRepositoryImpl implements AdminRepository {
 
     registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {
         return this.datasource.registerGroup(registerGroupDTO);
+    }
+
+    getStudentInfoById(id: number): Promise<StudentDescriptionEntity> {
+        return this.datasource.getStudentById(id);
     }
 }
