@@ -13,6 +13,8 @@ import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto
 import { RegisterStudent } from "../../domain/use-cases/admin/register-student.user-case";
 import { ShowGroupById } from "../../domain/use-cases/admin/show-group-by-id.user-case";
 import { ShowStudentInfoById } from "../../domain/use-cases/admin/show-student-info-by-id.user-case";
+import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
+import { UpdateUser } from "../../domain/use-cases/admin/update-user.user-case";
 
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
@@ -126,5 +128,30 @@ export class AdminController {
     }
 
     getTeachers = (req: Request, res: Response) => this.getUserType(req, res, RoleEnum.TEACHER);
+
+    updateUser = (req: Request, res: Response) => {
+        const { id } = req.params;
+        const numericId = Number(id);
+
+        if (isNaN(numericId)) {
+            res.status(400).json({ error: "Invalid user ID" });
+            return;
+        }
+
+        const [error, updateUserDTO] = UpdateUserDTO.create(req.body);
+
+        if (error) {
+            res.status(400).json({ error });
+            return;
+        }
+
+        new UpdateUser(this.adminRepository)
+            .execute(numericId, updateUserDTO!)
+            .then((data) => {
+                const { password, token, ...user } = data;
+                res.json(user);
+            })
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    };
 
 }

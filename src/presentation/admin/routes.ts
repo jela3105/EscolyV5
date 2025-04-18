@@ -48,6 +48,8 @@ export class AdminRoutes {
     router.get("/teachers", AdminRoutes.adminController.getTeachers);
     router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
 
+    router.put("/users/:id", AdminRoutes.adminController.updateUser);
+
     AdminRoutes.router = router;
   }
   static get routes(): Router {

@@ -13,6 +13,7 @@ import { StudentEntity } from "../../domain/entities/student.entity";
 import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
 import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
 import { StudentDescriptionEntity } from "../../domain/entities/student-description.entity";
+import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -211,6 +212,45 @@ export class AdminDatasourceImpl implements AdminDataSource {
                 throw error;
             }
 
+            this.logger.error(`${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
+    async updateUser(id: number, updateUserDTO: UpdateUserDTO): Promise<UserEntity> {
+        console.log(id)
+        const { email, names, fathersLastName, mothersLastName } = updateUserDTO;
+
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+
+            // Verify if user exists
+            const [existingUser]: [any[], any] = await pool.query("SELECT * FROM User WHERE userId = ?", [id]);
+            if (existingUser.length === 0) {
+                throw HttpError.notFound("User not found");
+            }
+
+            console.log(JSON.stringify(existingUser[0]))
+
+            // Verify if new email is already taken by another user
+            const [emailCheck]: [any[], any] = await pool.query("SELECT * FROM User WHERE email = ? AND userId != ?", [email, id]);
+            if (emailCheck.length > 0) {
+                throw HttpError.conflict("Email already in use");
+            }
+
+            // Update user
+            await pool.execute(
+                "UPDATE User SET names = ?, fathersLastName = ?, mothersLastName = ?, email = ? WHERE userId = ?",
+                [names, fathersLastName, mothersLastName, email, id]
+            );
+
+            // Get updated user
+            const [updatedUser]: [any[], any] = await pool.query("SELECT * FROM User WHERE userId = ?", [id]);
+            return UserEntityMapper.userEntityFromObject(updatedUser[0]);
+        } catch (error) {
+            if (error instanceof HttpError) {
+                throw error;
+            }
             this.logger.error(`${error}`);
             throw HttpError.internalServerError();
         }
