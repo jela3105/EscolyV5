@@ -1,6 +1,7 @@
 import { RegisterGroupDTO } from "../dtos/admin/register-group.dto";
 import { RegisterStudentDTO } from "../dtos/admin/register-student.dto";
 import { RegisterUserDTO } from "../dtos/admin/register-teacher.dto";
+import { UpdateStudentDTO } from "../dtos/admin/update-student.dto";
 import { UpdateUserDTO } from "../dtos/admin/update-user.dto";
 import { GroupDescriptionEntity } from "../entities/group-description.entity";
 import { GroupEntity } from "../entities/group.entity";
@@ -16,6 +17,7 @@ export abstract class AdminRepository {
   abstract getGroups(): Promise<GroupEntity[]>;
   abstract registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void>
   abstract registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity>
+  abstract updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void>
   abstract getGroupById(id: number): Promise<GroupDescriptionEntity>;
   abstract getStudentInfoById(id: number): Promise<StudentDescriptionEntity>;
 }

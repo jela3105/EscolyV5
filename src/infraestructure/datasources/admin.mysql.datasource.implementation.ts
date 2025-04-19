@@ -14,6 +14,7 @@ import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto
 import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
 import { StudentDescriptionEntity } from "../../domain/entities/student-description.entity";
 import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
+import { UpdateStudentDTO } from "../../domain/dtos/admin/update-student.dto";
 
 interface RegisterTeacherSuccessDTO {
     email: string;
@@ -251,6 +252,23 @@ export class AdminDatasourceImpl implements AdminDataSource {
             if (error instanceof HttpError) {
                 throw error;
             }
+            this.logger.error(`${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
+    async updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void> {
+        const { names, fathersLastName, mothersLastName } = updateStudentDTO;
+
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+
+            await pool.execute(
+                "UPDATE Student SET names = ?, fathersLastName = ?, mothersLastName = ? WHERE studentId = ?",
+                [names, fathersLastName, mothersLastName, id]
+            )
+
+        } catch (error: any) {
             this.logger.error(`${error}`);
             throw HttpError.internalServerError();
         }

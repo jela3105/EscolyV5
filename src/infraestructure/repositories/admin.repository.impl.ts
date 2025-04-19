@@ -10,6 +10,7 @@ import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto
 import { StudentEntity } from "../../domain/entities/student.entity";
 import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
 import { StudentDescriptionEntity } from "../../domain/entities/student-description.entity";
+import { UpdateStudentDTO } from "../../domain/dtos/admin/update-student.dto";
 import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
 
 export class AdminRepositoryImpl implements AdminRepository {
@@ -20,6 +21,10 @@ export class AdminRepositoryImpl implements AdminRepository {
 
     registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity> {
         return this.datasource.registerStudent(registerStudentDTO);
+    }
+
+    updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void> {
+        return this.datasource.updateStudent(id, updateStudentDTO);
     }
 
     getUsers(role: RoleEnum): Promise<UserEntity[]> {
