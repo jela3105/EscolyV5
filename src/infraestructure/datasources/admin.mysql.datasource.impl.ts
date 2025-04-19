@@ -1,3 +1,4 @@
+//TODO: Change filename
 import { MysqlDatabase } from "../../data/mysql";
 import { HttpError, UserEntity } from "../../domain";
 import { AdminDataSource } from "../../domain/datasources/admin.datasource";
@@ -15,13 +16,6 @@ import { GroupDescriptionEntity } from "../../domain/entities/group-description.
 import { StudentDescriptionEntity } from "../../domain/entities/student-description.entity";
 import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
 import { UpdateStudentDTO } from "../../domain/dtos/admin/update-student.dto";
-
-interface RegisterTeacherSuccessDTO {
-    email: string;
-    fathersLastName?: string;
-    mothersLastName?: string;
-    names?: string;
-}
 
 export class AdminDatasourceImpl implements AdminDataSource {
     private logger = buildLogger("AdminDatasourceImpl");
