@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AdminDatasourceImpl } from "../../infraestructure/datasources/admin.mysql.datasource.implementation";
+import { AdminDatasourceImpl } from "../../infraestructure/datasources/admin.mysql.datasource.impl";
 import { AdminRepositoryImpl } from "../../infraestructure";
 import { AdminController } from "./controller";
 import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";

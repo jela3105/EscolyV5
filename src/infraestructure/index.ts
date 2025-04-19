@@ -1,5 +1,5 @@
 export * from "./datasources/auth.mysql.datasource.impl"
-export * from "./repositories/auth.repository.impl" 
+export * from "./repositories/auth.repository.impl"
 export * from "./mappers/user.mapper"
-export * from "./datasources/admin.mysql.datasource.implementation"
+export * from "./datasources/admin.mysql.datasource.impl"
 export * from "./repositories/admin.repository.impl"
