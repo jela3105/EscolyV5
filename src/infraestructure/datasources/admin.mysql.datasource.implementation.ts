@@ -36,8 +36,8 @@ export class AdminDatasourceImpl implements AdminDataSource {
             );
 
             return rows.map((group) => GroupEntityMapper.groupEntityFromObject(group));
-        } catch (error) {
-            this.logger.error(`${error}`);
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -66,8 +66,8 @@ export class AdminDatasourceImpl implements AdminDataSource {
                 students: students
             };
 
-        } catch (error) {
-            this.logger.error(`${error}`);
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -105,8 +105,8 @@ export class AdminDatasourceImpl implements AdminDataSource {
                 }))
             );
 
-        } catch (error) {
-            this.logger.error(`${error}`);
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -117,8 +117,8 @@ export class AdminDatasourceImpl implements AdminDataSource {
             const [rows]: [any[], any] = await pool.query("SELECT * FROM User WHERE roleId = ?", [role]);
 
             return rows.map((user) => UserEntityMapper.userEntityFromObject(user));
-        } catch (error) {
-            this.logger.error(`${error}`);
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -134,13 +134,13 @@ export class AdminDatasourceImpl implements AdminDataSource {
                 [name, year]
             )
 
-        } catch (error) {
+        } catch (error: any) {
 
             if (error instanceof HttpError) {
                 throw error;
             }
 
-            this.logger.error(`${error}`);
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -172,7 +172,7 @@ export class AdminDatasourceImpl implements AdminDataSource {
                 throw HttpError.conflict(error.sqlMessage);
             }
 
-            this.logger.error(`${error}`);
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -207,13 +207,13 @@ export class AdminDatasourceImpl implements AdminDataSource {
             );
 
             return UserEntityMapper.userEntityFromObject(userInserted[0]);
-        } catch (error) {
+        } catch (error: any) {
 
             if (error instanceof HttpError) {
                 throw error;
             }
 
-            this.logger.error(`${error}`);
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -248,11 +248,13 @@ export class AdminDatasourceImpl implements AdminDataSource {
             // Get updated user
             const [updatedUser]: [any[], any] = await pool.query("SELECT * FROM User WHERE userId = ?", [id]);
             return UserEntityMapper.userEntityFromObject(updatedUser[0]);
-        } catch (error) {
+        } catch (error: any) {
+
             if (error instanceof HttpError) {
                 throw error;
             }
-            this.logger.error(`${error}`);
+
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
@@ -274,7 +276,7 @@ export class AdminDatasourceImpl implements AdminDataSource {
                 throw HttpError.conflict("El grupo no existe");
             }
 
-            this.logger.error(`${JSON.stringify(error)}`);
+            this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
     }
