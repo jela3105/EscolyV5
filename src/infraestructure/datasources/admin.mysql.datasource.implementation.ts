@@ -258,18 +258,23 @@ export class AdminDatasourceImpl implements AdminDataSource {
     }
 
     async updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void> {
-        const { names, fathersLastName, mothersLastName } = updateStudentDTO;
+        const { names, fathersLastName, mothersLastName, groupId } = updateStudentDTO;
 
         try {
             const pool = await MysqlDatabase.getPoolInstance();
 
             await pool.execute(
-                "UPDATE Student SET names = ?, fathersLastName = ?, mothersLastName = ? WHERE studentId = ?",
-                [names, fathersLastName, mothersLastName, id]
+                "UPDATE Student SET names = ?, fathersLastName = ?, mothersLastName = ?, groupId = ? WHERE studentId = ?",
+                [names, fathersLastName, mothersLastName, groupId, id]
             )
 
         } catch (error: any) {
-            this.logger.error(`${error}`);
+
+            if (error.code == "ER_NO_REFERENCED_ROW_2") {
+                throw HttpError.conflict("El grupo no existe");
+            }
+
+            this.logger.error(`${JSON.stringify(error)}`);
             throw HttpError.internalServerError();
         }
     }
