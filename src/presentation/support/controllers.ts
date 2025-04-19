@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { CreateTicketDTO } from "../../domain/dtos/support/CreateTicketDTO";
 import { SupportRepository } from "../../domain/repositories/support.repository";
 import { EmailService } from "../../domain/services/email/email.service";
@@ -11,7 +12,20 @@ export class SupportController {
         private readonly supportRepository: SupportRepository
     ) { }
 
-    createTicket = (req: any, res: any) => {
+    getAllTicketsByUserId = (req: Request, res: Response) => {
+        const { id } = req.body.payload;
+
+        if (isNaN(id)) {
+            res.status(400).json({ error: "Invalid user id" });
+            return;
+        }
+
+        this.supportRepository.getAllByUserId(id)
+            .then((data) => res.json(data))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
+
+    createTicket = (req: Request, res: Response) => {
 
         const { id } = req.body.payload;
 

@@ -10,4 +10,8 @@ export class SupportRepositoryImpl implements SupportRepository {
     createTicket(createTicketDTO: CreateTicketDTO, userId: number): Promise<void> {
         return this.datasource.createTicket(createTicketDTO, userId);
     }
+
+    getAllByUserId(id: number): Promise<any[]> {
+        return this.datasource.getAllByUserId(id);
+    }
 }

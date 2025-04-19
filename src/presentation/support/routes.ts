@@ -23,6 +23,7 @@ export class SupportRoutes {
 
         const router = Router();
 
+        router.get("/", SupportRoutes.supportController.getAllTicketsByUserId);
         router.post("/ticket", SupportRoutes.supportController.createTicket);
 
         SupportRoutes.router = router;

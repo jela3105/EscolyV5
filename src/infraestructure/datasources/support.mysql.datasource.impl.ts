@@ -27,4 +27,15 @@ export class SupportDataSourceImpl implements SupportDataSource {
         }
     }
 
+    async getAllByUserId(id: number): Promise<any[]> {
+        const pool = await MysqlDatabase.getPoolInstance();
+        try {
+            const [rows] = await pool.query("SELECT * FROM BugReport WHERE userId = ?", [id]);
+            return rows as any[];
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
 }
