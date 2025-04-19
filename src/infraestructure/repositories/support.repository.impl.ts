@@ -14,4 +14,8 @@ export class SupportRepositoryImpl implements SupportRepository {
     getAllByUserId(id: number): Promise<any[]> {
         return this.datasource.getAllByUserId(id);
     }
+
+    getSeverities(): Promise<any[]> {
+        return this.datasource.getSeverities();
+    }
 }

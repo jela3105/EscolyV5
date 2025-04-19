@@ -38,4 +38,15 @@ export class SupportDataSourceImpl implements SupportDataSource {
         }
     }
 
+    async getSeverities(): Promise<any[]> {
+        const pool = await MysqlDatabase.getPoolInstance();
+        try {
+            const [rows] = await pool.query("SELECT * FROM Severity");
+            return rows as any[];
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
 }

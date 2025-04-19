@@ -25,8 +25,13 @@ export class SupportController {
             .catch((error) => HttpErrorHandler.handleError(error, res));
     }
 
-    createTicket = (req: Request, res: Response) => {
+    getSeverity = (req: Request, res: Response) => {
+        this.supportRepository.getSeverities()
+            .then((data) => res.json(data))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
 
+    createTicket = (req: Request, res: Response) => {
         const { id } = req.body.payload;
 
         if (isNaN(id)) {
