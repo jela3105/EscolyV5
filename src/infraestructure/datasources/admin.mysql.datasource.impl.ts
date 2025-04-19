@@ -253,6 +253,33 @@ export class AdminDatasourceImpl implements AdminDataSource {
         }
     }
 
+    async unlinkGuardiansFromStudent(studentId: number, guardianId: number): Promise<void> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+            // Verify if user exists
+            const [existingUser]: [any[], any] = await pool.query("SELECT * FROM User WHERE userId = ?", [guardianId]);
+            if (existingUser.length === 0) {
+                throw HttpError.notFound("Usuario no encontrado");
+            }
+            // Verify if student exists
+            const [existingStudent]: [any[], any] = await pool.query("SELECT * FROM Student WHERE studentId = ?", [studentId]);
+            if (existingStudent.length === 0) {
+                throw HttpError.notFound("Estudiante no encontrado");
+            }
+
+            await pool.execute(
+                "DELETE FROM Guardian WHERE studentId = ? AND userId = ?",
+                [studentId, guardianId]
+            );
+        } catch (error: any) {
+            if (error instanceof HttpError) {
+                throw error;
+            }
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
     async updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void> {
         const { names, fathersLastName, mothersLastName, groupId } = updateStudentDTO;
 

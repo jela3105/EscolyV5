@@ -17,6 +17,7 @@ import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
 import { UpdateUser } from "../../domain/use-cases/admin/update-user.user-case";
 import { UpdateStudentDTO } from "../../domain/dtos/admin/update-student.dto";
 import { UpdateStudent } from "../../domain/use-cases/admin/update-student.user-case";
+import { UnlinkGuardians } from "../../domain/use-cases/admin/unlink-guardians.user-case";
 
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
@@ -130,6 +131,21 @@ export class AdminController {
     }
 
     getTeachers = (req: Request, res: Response) => this.getUserType(req, res, RoleEnum.TEACHER);
+
+    unlinkGuardiansFromStudent = (req: Request, res: Response) => {
+        const { studentId, guardianId } = req.body;
+        const numericStudentId = Number(studentId);
+
+        if (isNaN(numericStudentId)) {
+            res.status(400).json({ error: "Invalid student ID" });
+            return;
+        }
+
+        new UnlinkGuardians(this.adminRepository)
+            .execute(numericStudentId, guardianId)
+            .then(() => res.sendStatus(204))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
 
     updateUser = (req: Request, res: Response) => {
         const { id } = req.params;

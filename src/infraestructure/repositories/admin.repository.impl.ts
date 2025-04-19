@@ -23,6 +23,10 @@ export class AdminRepositoryImpl implements AdminRepository {
         return this.datasource.registerStudent(registerStudentDTO);
     }
 
+    unlinkGuardiansFromStudent(studentId: number, guardianId: number): Promise<void> {
+        return this.datasource.unlinkGuardiansFromStudent(studentId, guardianId);
+    }
+
     updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void> {
         return this.datasource.updateStudent(id, updateStudentDTO);
     }

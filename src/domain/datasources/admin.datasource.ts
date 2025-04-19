@@ -16,6 +16,7 @@ export abstract class AdminDataSource {
     abstract registerUser(registerUserDTO: RegisterUserDTO, role: RoleEnum): Promise<UserEntity>
     abstract updateUser(id: number, updateUserDTO: UpdateUserDTO): Promise<UserEntity>
     abstract registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity>
+    abstract unlinkGuardiansFromStudent(studentId: number, guardianId: number): Promise<void>
     abstract updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void>
     abstract getGroupById(id: number): Promise<any>
     abstract getStudentById(id: number): Promise<StudentDescriptionEntity>

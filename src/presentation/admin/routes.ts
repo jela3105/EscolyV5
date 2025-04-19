@@ -45,6 +45,7 @@ export class AdminRoutes {
     router.post("/students/register", AdminRoutes.adminController.registerStudent);
     router.put("/student/:id", AdminRoutes.adminController.updateStudent);
     router.get("/student/:id", AdminRoutes.adminController.getStudentInfo)
+    router.delete("/student/unlink-guardian", AdminRoutes.adminController.unlinkGuardiansFromStudent);
 
     router.get("/teachers", AdminRoutes.adminController.getTeachers);
     router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
