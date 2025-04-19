@@ -15,6 +15,7 @@ export abstract class AdminRepository {
   abstract registerUser(registerTeacherDto: RegisterUserDTO, role: RoleEnum): Promise<UserEntity>
   abstract updateUser(id: number, updateUserDTO: UpdateUserDTO): Promise<UserEntity>
   abstract getGroups(): Promise<GroupEntity[]>;
+  abstract linkGuardianToStudent(studentId: number, guardianId: number): Promise<void>
   abstract registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void>
   abstract registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity>
   abstract updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void>

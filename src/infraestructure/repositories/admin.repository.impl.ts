@@ -47,6 +47,10 @@ export class AdminRepositoryImpl implements AdminRepository {
         return this.datasource.getGroupById(id);
     }
 
+    linkGuardianToStudent(studentId: number, guardianId: number): Promise<void> {
+        return this.datasource.linkGuardianToStudent(studentId, guardianId);
+    }
+
     registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {
         return this.datasource.registerGroup(registerGroupDTO);
     }

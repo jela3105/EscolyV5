@@ -117,6 +117,38 @@ export class AdminDatasourceImpl implements AdminDataSource {
         }
     }
 
+    async linkGuardianToStudent(studentId: number, guardianId: number): Promise<void> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+            // Verify if user exists
+            const [existingUser]: [any[], any] = await pool.query("SELECT * FROM User WHERE userId = ?", [guardianId]);
+            if (existingUser.length === 0) {
+                throw HttpError.notFound("Usuario no encontrado");
+            }
+            // Verify if student exists
+            const [existingStudent]: [any[], any] = await pool.query("SELECT * FROM Student WHERE studentId = ?", [studentId]);
+            if (existingStudent.length === 0) {
+                throw HttpError.notFound("Estudiante no encontrado");
+            }
+            // Verify if guardian is already linked to student
+            const [guardianCheck]: [any[], any] = await pool.query("SELECT * FROM Guardian WHERE studentId = ? AND userId = ?", [studentId, guardianId]);
+            if (guardianCheck.length > 0) {
+                throw HttpError.conflict("Tutor vinculado con el usuario");
+            }
+            // Link guardian to student
+            await pool.execute(
+                "INSERT INTO Guardian (studentId, userId) VALUES (?, ?)",
+                [studentId, guardianId]
+            );
+        } catch (error: any) {
+            if (error instanceof HttpError) {
+                throw error;
+            }
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
     async registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {
         const { year, name } = registerGroupDTO;
 

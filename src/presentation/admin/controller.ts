@@ -17,7 +17,8 @@ import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
 import { UpdateUser } from "../../domain/use-cases/admin/update-user.user-case";
 import { UpdateStudentDTO } from "../../domain/dtos/admin/update-student.dto";
 import { UpdateStudent } from "../../domain/use-cases/admin/update-student.user-case";
-import { UnlinkGuardians } from "../../domain/use-cases/admin/unlink-guardians.user-case";
+import { UnlinkGuardians as UnlinkGuardian } from "../../domain/use-cases/admin/unlink-guardians.user-case";
+import { LinkGuardianToStudent } from "../../domain/use-cases/admin/link-guardian-to-student.user-case";
 
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
@@ -132,7 +133,23 @@ export class AdminController {
 
     getTeachers = (req: Request, res: Response) => this.getUserType(req, res, RoleEnum.TEACHER);
 
-    unlinkGuardiansFromStudent = (req: Request, res: Response) => {
+    linkGuardianToStudent = (req: Request, res: Response) => {
+        const { studentId, guardianId } = req.body;
+        const numericStudentId = Number(studentId);
+        const numericGuardianId = Number(guardianId);
+
+        if (isNaN(numericStudentId) || isNaN(numericGuardianId)) {
+            res.status(400).json({ error: "Valor de estudiante o tutor invalido" });
+            return;
+        }
+
+        new LinkGuardianToStudent(this.adminRepository)
+            .execute(numericStudentId, numericGuardianId)
+            .then(() => res.sendStatus(204))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
+
+    unlinkGuardianFromStudent = (req: Request, res: Response) => {
         const { studentId, guardianId } = req.body;
         const numericStudentId = Number(studentId);
 
@@ -141,7 +158,7 @@ export class AdminController {
             return;
         }
 
-        new UnlinkGuardians(this.adminRepository)
+        new UnlinkGuardian(this.adminRepository)
             .execute(numericStudentId, guardianId)
             .then(() => res.sendStatus(204))
             .catch((error) => HttpErrorHandler.handleError(error, res));
