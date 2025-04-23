@@ -50,6 +50,26 @@ export class AuthMiddleware {
     }
   };
 
+  static isGuardian: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { role } = req.body.payload;
+    try {
+
+      if (role !== 1) {
+        res.status(401).json({ error: "Unauthorized user for operation" });
+        return;
+      }
+
+      next();
+    } catch (error) {
+      this.logger.error(`${error}`);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
   static isAdmin: RequestHandler = async (
     req: Request,
     res: Response,
