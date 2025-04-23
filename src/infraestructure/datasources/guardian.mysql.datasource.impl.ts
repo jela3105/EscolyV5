@@ -13,29 +13,19 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
         try {
             const [rows] = await pool.query(`
                 SELECT 
-                    StudentInfo.names, 
-                    StudentInfo.fathersLastName, 
-                    StudentInfo.mothersLastname, 
-                    StudentInfo.deviceId,
+                    Student.names, 
+                    Student.fathersLastName, 
+                    Student.mothersLastname, 
+                    Student.deviceId,
                     Groupp.groupName, 
-                    Groupp.Yearr as year, 
+                    Groupp.Yearr AS year, 
                     CONCAT(User.names, ' ', User.fathersLastName, ' ', User.mothersLastName) AS teacher
-                FROM 
-                    (
-                        SELECT 
-                            Student.names, 
-                            Student.fathersLastName, 
-                            Student.mothersLastname, 
-                            Student.deviceId,
-                            Groupp.groupId 
-                        FROM Guardian 
-                        INNER JOIN Student ON Student.studentId = Guardian.studentId 
-                        INNER JOIN User ON User.userId = Guardian.userId 
-                        INNER JOIN Groupp ON Student.groupId = Groupp.groupId 
-                        WHERE User.userId = ?
-                    ) AS StudentInfo
-                INNER JOIN Groupp ON Groupp.groupId = StudentInfo.groupId
-                INNER JOIN User ON User.userId = Groupp.userId;
+                FROM Guardian
+                INNER JOIN Student ON Student.studentId = Guardian.studentId
+                INNER JOIN User AS GuardianUser ON GuardianUser.userId = Guardian.userId
+                INNER JOIN Groupp ON Student.groupId = Groupp.groupId
+                INNER JOIN User ON User.userId = Groupp.userId
+                WHERE GuardianUser.userId = ?;
             `, [id]);
             return rows as any[];
         } catch (error: any) {
@@ -43,5 +33,4 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
             throw HttpError.internalServerError();
         }
     }
-
 }
