@@ -9,7 +9,15 @@ export class GuardianController {
     ) { }
 
     getStudents = async (req: Request, res: Response) => {
-        res.status(200).json({ message: "GuardianController getStudents" });
-    }
+        const { id } = req.body.payload;
 
+        if (isNaN(id)) {
+            res.status(400).json({ error: "Numero de usuario invalido" });
+            return;
+        }
+
+        this.guardianRepository.getStudents(id)
+            .then((students) => { res.status(200).json(students); })
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
 }

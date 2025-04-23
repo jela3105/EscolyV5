@@ -13,9 +13,9 @@ export class GuardianRoutes {
         if (!GuardianRoutes.guardianController) {
 
             const database = new GuardianDataSourceImpl();
-            const supportRepository = new GuardianRepositoryImpl(database);
+            const guardianRepository = new GuardianRepositoryImpl(database);
 
-            const guardianController = new GuardianController(supportRepository);
+            const guardianController = new GuardianController(guardianRepository);
             GuardianRoutes.guardianController = guardianController;
         }
 
