@@ -9,6 +9,7 @@ import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { TokenRepository } from "../../domain/repositories/token.repository";
 import { TokenService } from "../../domain/services/token/token.service";
 import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";
+import { SocketService } from "../../infraestructure/services/socket.service";
 
 export class AuthRoutes {
 
@@ -41,6 +42,30 @@ export class AuthRoutes {
     router.get("/change-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPasswordForm);
     router.post("/recover-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPassword);
     router.put("/change-password", [AuthMiddleware.validateJWT], AuthRoutes.authController.changePassword);
+
+    router.post("/location", (req, res) => {
+      const { deviceId, latitude, longitude } = req.body;
+
+      if (!deviceId || !latitude || !longitude) {
+        res.status(400).json({ error: "need paramethers" });
+        return;
+      }
+
+      console.log("Ubicación recibida:", { deviceId, latitude, longitude });
+
+      try {
+        const io = SocketService.getIO();
+        io.to(deviceId).emit("location-update", {
+          lat: latitude,
+          lng: longitude,
+        });
+
+        res.status(200).json({ message: "Ubicación enviada por socket" });
+      } catch (err) {
+        console.error("Error al emitir ubicación:", err);
+        res.status(500).json({ error: "Socket not initialized" });
+      }
+    });
 
     AuthRoutes.router = router;
 
