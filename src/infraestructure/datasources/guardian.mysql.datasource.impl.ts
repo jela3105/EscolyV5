@@ -16,6 +16,7 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
                     StudentInfo.names, 
                     StudentInfo.fathersLastName, 
                     StudentInfo.mothersLastname, 
+                    StudentInfo.deviceId,
                     Groupp.groupName, 
                     Groupp.Yearr as year, 
                     CONCAT(User.names, ' ', User.fathersLastName, ' ', User.mothersLastName) AS teacher
@@ -25,6 +26,7 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
                             Student.names, 
                             Student.fathersLastName, 
                             Student.mothersLastname, 
+                            Student.deviceId,
                             Groupp.groupId 
                         FROM Guardian 
                         INNER JOIN Student ON Student.studentId = Guardian.studentId 
