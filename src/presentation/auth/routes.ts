@@ -70,7 +70,7 @@ export class AuthRoutes {
         }
 
         io.to(socketId).emit("location-update", {
-          devideId: deviceId,
+          deviceId: deviceId,
           lat: latitude,
           lng: longitude,
         });

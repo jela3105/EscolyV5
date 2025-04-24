@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { buildLogger, JwtAdapter } from "../../config";
 import { MysqlDatabase } from "../../data/mysql";
-import { UserEntityMapper } from "../../infraestructure";
 
 export class AuthMiddleware {
 

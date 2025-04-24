@@ -16,7 +16,7 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
                     Student.studentId as id,
                     Student.names, 
                     Student.fathersLastName, 
-                    Student.mothersLastname, 
+                    Student.mothersLastName, 
                     Student.deviceId,
                     Groupp.groupName, 
                     Groupp.Yearr AS year, 
