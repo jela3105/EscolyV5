@@ -96,7 +96,7 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
             // If the studentId is not in the list, throw an error
             const studentExists = studentsIds.some((student: any) => student.studentId === studentId);
 
-            if (!studentExists) throw HttpError.forbidden("El tutor no tiene acceso a este estudiante");
+            if (!studentExists) throw HttpError.forbidden("El estudiante a editar no existe");
 
             await pool.execute(`
                 INSERT INTO HomeCoordinates (studentId, latitude, longitude)
@@ -104,6 +104,40 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
             `, [studentId, lat, lng]);
 
         } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
+    async updateHomeLocation(locationId: number, lat: number, lng: number, guardianId: number): Promise<void> {
+        const pool = await MysqlDatabase.getPoolInstance();
+
+        // Validate if user has access to given locationId
+        try {
+            const [ids]: [any[], any] = await pool.query(`SELECT homeId from Student 
+                NATURAL JOIN HomeCoordinates 
+                INNER JOIN Guardian on Guardian.studentId = Student.studentId 
+                INNER JOIN User ON User.userId = Guardian.userId 
+                WHERE User.userId = ?;`, [guardianId])
+
+            if (ids.length === 0) throw HttpError.forbidden("El tutor no tiene estudiantes registrados");
+
+            // Check if the locationId is in the list of ids
+            // If the locationId is not in the list, throw an error
+            const locationExists = ids.some((location: any) => location.homeId === locationId);
+            if (!locationExists) throw HttpError.forbidden("La ubicacion a editar no existe");
+
+            // Update the location
+            await pool.query(`
+                UPDATE HomeCoordinates
+                SET latitude = ?, longitude = ?
+                WHERE homeId = ?;
+            `, [lat, lng, locationId]);
+
+        } catch (error: any) {
+
+            if (error instanceof HttpError) throw error;
+
             this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }
