@@ -10,4 +10,8 @@ export class GuardianRepositoryImpl implements GuardianRepository {
         return this.datasource.getStudents(id);
     }
 
+    updateDevice(studentId: number, deviceId: string, guardianId: number): Promise<void> {
+        return this.datasource.updateDevice(studentId, deviceId, guardianId);
+    }
+
 }

@@ -22,6 +22,7 @@ export class GuardianRoutes {
         const router = Router();
 
         router.get("/students", GuardianRoutes.guardianController.getStudents);
+        router.put("/device", GuardianRoutes.guardianController.updateDevice);
 
         GuardianRoutes.router = router;
     }
