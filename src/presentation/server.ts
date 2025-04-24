@@ -4,7 +4,7 @@ import { buildLogger } from "../config";
 import cors from "cors";
 import path from "path";
 import { SocketService } from "../infraestructure/services/socket.service";
-import { SocketEventHandler } from "../infraestructure/websocket/socket-event-handler";
+import { initializeSocketEventHandler, SocketEventHandler } from "../infraestructure/websocket/socket-event-handler";
 
 interface Options {
   port: number;
@@ -27,9 +27,30 @@ export class Server {
 
   async start() {
 
+    // Middleware CORS
+    const isDev = process.env.NODE_ENV === 'dev';
+    const allowedOrigins = [
+      //TODO: Add firebase origin
+      'https://escoly.org',
+    ];
+
+    if (!isDev) {
+      this.app.use(cors({
+        origin: function (origin, callback) {
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            callback(new Error('Not allowed by CORS'));
+          }
+        },
+        credentials: true,
+      }));
+    } else {
+      this.app.use(cors());
+    }
+
     //Middlewares
     this.app.use(express.json());
-    this.app.use(cors());
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded is postman
 
     //Views with ejs
@@ -41,7 +62,7 @@ export class Server {
 
     //Socket
     const io = SocketService.init(this.httpServer);
-    const socketEventHandler = new SocketEventHandler(io);
+    const socketEventHandler = initializeSocketEventHandler(io);
     socketEventHandler.registerEvents();
 
     this.httpServer.listen(this.port, () => {

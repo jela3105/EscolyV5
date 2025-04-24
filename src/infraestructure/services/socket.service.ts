@@ -1,5 +1,6 @@
 import { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import { JwtAdapter } from "../../config";
 
 export class SocketService {
     private static io: SocketIOServer;
@@ -8,6 +9,21 @@ export class SocketService {
         this.io = new SocketIOServer(server, {
             cors: { origin: "*" },
         });
+
+        this.io.use((socket, next) => {
+            const token = socket.handshake.auth?.token;
+
+            JwtAdapter.validateToken<{ id: string, role: number }>(token)
+                .then(async (payload) => {
+                    if (!payload) {
+                        return next(new Error("Unauthorized"));
+                    }
+
+                    socket.data.payload = payload;
+                })
+            next();
+        });
+
         return this.io;
     }
 

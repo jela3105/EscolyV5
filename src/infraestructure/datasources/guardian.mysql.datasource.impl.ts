@@ -13,6 +13,7 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
         try {
             const [rows] = await pool.query(`
                 SELECT 
+                    Student.studentId as id,
                     Student.names, 
                     Student.fathersLastName, 
                     Student.mothersLastname, 

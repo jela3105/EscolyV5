@@ -10,6 +10,7 @@ import { TokenRepository } from "../../domain/repositories/token.repository";
 import { TokenService } from "../../domain/services/token/token.service";
 import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";
 import { SocketService } from "../../infraestructure/services/socket.service";
+import { getSocketEventHandler } from "../../infraestructure/websocket/socket-event-handler";
 
 export class AuthRoutes {
 
@@ -51,11 +52,25 @@ export class AuthRoutes {
         return;
       }
 
-      console.log("Ubicación recibida:", { deviceId, latitude, longitude });
-
       try {
+
         const io = SocketService.getIO();
-        io.to(deviceId).emit("location-update", {
+        const socketEventHandler = getSocketEventHandler();
+
+        if (!socketEventHandler) {
+          res.status(500).json({ error: "Socket not initialized" });
+          return;
+        }
+
+        const socketId = socketEventHandler.rooms.get(deviceId);
+
+        if (!socketId) {
+          res.status(404).json({ error: "Socket not found" });
+          return;
+        }
+
+        io.to(socketId).emit("location-update", {
+          devideId: deviceId,
           lat: latitude,
           lng: longitude,
         });
