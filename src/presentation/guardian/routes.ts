@@ -23,6 +23,8 @@ export class GuardianRoutes {
 
         router.get("/students", GuardianRoutes.guardianController.getStudents);
         router.put("/device", GuardianRoutes.guardianController.updateDevice);
+        router.post("/home", GuardianRoutes.guardianController.addHomeLocation);
+        router.put("/home/:locationId", GuardianRoutes.guardianController.updateHomeLocation);
 
         GuardianRoutes.router = router;
     }

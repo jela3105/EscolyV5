@@ -45,7 +45,41 @@ export class GuardianController {
         this.guardianRepository.updateDevice(studentIdNumber, deviceId, req.body.payload.id)
             .then(() => { res.status(200).json({ message: "Dispositivo actualizado" }); })
             .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
+
+    addHomeLocation = async (req: Request, res: Response) => {
+        const { studentId, lat, lng } = req.body;
+
+        if (!studentId || !lat || !lng) {
+            res.status(400).json({ error: "Faltan datos" });
+            return;
+        }
+
+        //convert studentId to number
+        const studentIdNumber = parseInt(studentId);
+
+        if (isNaN(studentIdNumber)) {
+            res.status(400).json({ error: "Id estudiante invalido" });
+            return;
+        }
+
+        this.guardianRepository.addHomeLocation(studentIdNumber, lat, lng, req.body.payload.id)
+            .then(() => { res.status(200).json({ message: "Ubicacion actualizada" }); })
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
+
+    updateHomeLocation = async (req: Request, res: Response) => {
+        const { lat, lng } = req.body;
+
+        if (!lat || !lng) {
+            res.status(400).json({ error: "Faltan datos" });
+            return;
+
+
+
+        }
 
 
     }
+
 }

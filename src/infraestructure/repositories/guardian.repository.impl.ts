@@ -14,4 +14,8 @@ export class GuardianRepositoryImpl implements GuardianRepository {
         return this.datasource.updateDevice(studentId, deviceId, guardianId);
     }
 
+    addHomeLocation(studentId: number, lat: number, lng: number, guardianId: number): Promise<void> {
+        return this.datasource.addHomeLocation(studentId, lat, lng, guardianId);
+    }
+
 }

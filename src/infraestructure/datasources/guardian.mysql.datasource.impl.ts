@@ -80,5 +80,32 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
         }
     }
 
+    async addHomeLocation(studentId: number, lat: number, lng: number, guardianId: number): Promise<void> {
+        const pool = await MysqlDatabase.getPoolInstance();
+        try {
+            // Check if the guardian has access to the student
+            const [studentsIds]: [any[], any] = await pool.query(`
+                SELECT Guardian.studentId
+                FROM Guardian
+                WHERE Guardian.userId = ?`, [guardianId]);
 
+            if (studentsIds.length === 0)
+                throw HttpError.forbidden("El tutor no tiene estudiantes registrados");
+
+            // Check if the studentId is in the list of studentsIds
+            // If the studentId is not in the list, throw an error
+            const studentExists = studentsIds.some((student: any) => student.studentId === studentId);
+
+            if (!studentExists) throw HttpError.forbidden("El tutor no tiene acceso a este estudiante");
+
+            await pool.execute(`
+                INSERT INTO HomeCoordinates (studentId, latitude, longitude)
+                VALUES (?, ?, ?)
+            `, [studentId, lat, lng]);
+
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
 }
