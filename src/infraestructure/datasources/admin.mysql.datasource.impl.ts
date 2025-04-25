@@ -105,6 +105,26 @@ export class AdminDatasourceImpl implements AdminDataSource {
         }
     }
 
+    async getStudentsWithoutGroup(): Promise<StudentEntity[]> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+            const [rows]: [any[], any] = await pool.query(
+                "SELECT studentId, names, mothersLastName, fathersLastName FROM Student WHERE groupId IS NULL"
+            );
+            return rows.map((student) => new StudentEntity(
+                student.studentId,
+                null,
+                student.names,
+                student.fathersLastName,
+                student.mothersLastName,
+                []
+            ));
+        } catch (error: any) {
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
     async getUsers(role: RoleEnum): Promise<UserEntity[]> {
         try {
             const pool = await MysqlDatabase.getPoolInstance();

@@ -21,4 +21,5 @@ export abstract class AdminDataSource {
     abstract updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void>
     abstract getGroupById(id: number): Promise<any>
     abstract getStudentById(id: number): Promise<StudentDescriptionEntity>
+    abstract getStudentsWithoutGroup(): Promise<StudentEntity[]>;
 }

@@ -22,4 +22,5 @@ export abstract class AdminRepository {
   abstract unlinkGuardiansFromStudent(studentId: number, guardianId: number): Promise<void>
   abstract getGroupById(id: number): Promise<GroupDescriptionEntity>;
   abstract getStudentInfoById(id: number): Promise<StudentDescriptionEntity>;
+  abstract getStudentsWithoutGroup(): Promise<StudentEntity[]>;
 }

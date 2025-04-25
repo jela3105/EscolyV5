@@ -46,6 +46,7 @@ export class AdminRoutes {
     router.put("/student/:id", AdminRoutes.adminController.updateStudent);
     router.patch("/student/link-guardian", AdminRoutes.adminController.linkGuardianToStudent);
     router.get("/student/:id", AdminRoutes.adminController.getStudentInfo)
+    router.get("/students/unassgined", AdminRoutes.adminController.getStudentsWithoutGroup);
     router.delete("/student/unlink-guardian", AdminRoutes.adminController.unlinkGuardianFromStudent);
 
     router.get("/teachers", AdminRoutes.adminController.getTeachers);

@@ -124,6 +124,21 @@ export class AdminController {
             .catch(error => HttpErrorHandler.handleError(error, res))
     }
 
+    getStudentsWithoutGroup = (req: Request, res: Response) => {
+        this.adminRepository.getStudentsWithoutGroup()
+            .then((data) => {
+                const studentsWithoutGroup = data.map((student) => ({
+                    id: student.id,
+                    names: student.names,
+                    fathersLastName: student.fathersLastName,
+                    mothersLastName: student.mothersLastName,
+                }
+                ));
+                res.json(studentsWithoutGroup);
+            })
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
+
     getUserType = (req: Request, res: Response, role: RoleEnum) => {
         new ShowUsers(this.adminRepository, role)
             .execute()

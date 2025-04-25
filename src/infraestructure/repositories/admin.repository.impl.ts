@@ -59,6 +59,10 @@ export class AdminRepositoryImpl implements AdminRepository {
         return this.datasource.getStudentById(id);
     }
 
+    getStudentsWithoutGroup(): Promise<StudentEntity[]> {
+        return this.datasource.getStudentsWithoutGroup();
+    }
+
     updateUser(id: number, updateUserDTO: UpdateUserDTO): Promise<UserEntity> {
         return this.datasource.updateUser(id, updateUserDTO);
     }
