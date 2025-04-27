@@ -191,6 +191,26 @@ export class AdminController {
             .catch((error) => HttpErrorHandler.handleError(error, res));
     }
 
+    assignTeacherToGroup = (req: Request, res: Response) => {
+        const { groupId, teacherId } = req.body;
+
+        if (!groupId || !teacherId) {
+            res.status(400).json({ error: "Falta grupo o profesor" });
+            return;
+        }
+
+        const numericGroupId = Number(groupId);
+        const numericTeacherId = Number(teacherId);
+
+        if (isNaN(numericGroupId) || isNaN(numericTeacherId)) {
+            res.status(400).json({ error: "Grupo o profesor id invalido" });
+            return;
+        }
+
+        this.adminRepository.assignTeacherToGroup(numericGroupId, numericTeacherId)
+            .then(() => res.sendStatus(204))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
 
     unlinkGuardianFromStudent = (req: Request, res: Response) => {
         const { studentId, guardianId } = req.body;

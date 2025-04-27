@@ -52,6 +52,7 @@ export class AdminRoutes {
 
     router.get("/teachers", AdminRoutes.adminController.getTeachers);
     router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
+    router.post("/teacher/assign-group", AdminRoutes.adminController.assignTeacherToGroup);
 
     router.put("/users/:id", AdminRoutes.adminController.updateUser);
 

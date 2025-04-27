@@ -23,6 +23,10 @@ export class AdminRepositoryImpl implements AdminRepository {
         return this.datasource.assignStudentsToGroup(groupId, studentIds);
     }
 
+    assignTeacherToGroup(groupId: number, teacherId: number): Promise<void> {
+        return this.datasource.assignTeacherToGroup(groupId, teacherId);
+    }
+
     registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity> {
         return this.datasource.registerStudent(registerStudentDTO);
     }

@@ -55,6 +55,51 @@ export class AdminDatasourceImpl implements AdminDataSource {
         }
     }
 
+    async assignTeacherToGroup(groupId: number, teacherId: number): Promise<void> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+            // Validate if the groupId exists
+            const [group]: [any[], any] = await pool.query(
+                "SELECT groupId FROM Groupp WHERE groupId = ?",
+                [groupId]
+            );
+
+            if (group.length === 0) {
+                throw HttpError.notFound("No se ha encontrado el grupo");
+            }
+            // Validate if the teacherId exists
+            const [teacher]: [any[], any] = await pool.query(
+                "SELECT userId FROM User WHERE userId = ?",
+                [teacherId]
+            );
+
+            if (teacher.length === 0) {
+                throw HttpError.notFound("No se ha encontrado el profesor");
+            }
+
+            // Validate if given teacherId is a teacher
+            const [role]: [any[], any] = await pool.query(
+                "SELECT roleId FROM User WHERE userId = ?",
+                [teacherId]
+            );
+
+            if (role[0].roleId != RoleEntity.fromEnum(RoleEnum.TEACHER).roleNumber) {
+                throw HttpError.conflict("El usuario no es un profesor");
+            }
+
+            // Assign the teacher to the group
+            await pool.execute(
+                "UPDATE Groupp SET userId = ? WHERE groupId = ?",
+                [teacherId, groupId]
+            );
+        } catch (error: any) {
+            if (error instanceof HttpError) throw error;
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
+
     async getGroups(): Promise<GroupEntity[]> {
         try {
             const pool = await MysqlDatabase.getPoolInstance();
