@@ -22,6 +22,39 @@ export class AdminDatasourceImpl implements AdminDataSource {
 
     constructor() { }
 
+    async assignStudentsToGroup(groupId: number, studentIds: number[]): Promise<void> {
+        try {
+            const pool = await MysqlDatabase.getPoolInstance();
+
+            // Validate if the groupId exists
+            const [group]: [any[], any] = await pool.query(
+                "SELECT groupId FROM Groupp WHERE groupId = ?",
+                [groupId]
+            );
+
+            if (group.length === 0) {
+                throw HttpError.notFound("No se ha encontrado el grupo");
+            }
+
+            // Use Promise.all to ensure all updates are completed before proceeding
+            await Promise.all(
+                studentIds.map((studentId) =>
+                    pool.execute(
+                        "UPDATE Student SET groupId = ? WHERE studentId = ?",
+                        [groupId, studentId]
+                    )
+                )
+            );
+
+        } catch (error: any) {
+
+            if (error instanceof HttpError) throw error;
+
+            this.logger.error(`${error.code} ${error}`);
+            throw HttpError.internalServerError();
+        }
+    }
+
     async getGroups(): Promise<GroupEntity[]> {
         try {
             const pool = await MysqlDatabase.getPoolInstance();

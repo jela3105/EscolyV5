@@ -164,6 +164,34 @@ export class AdminController {
             .catch((error) => HttpErrorHandler.handleError(error, res));
     }
 
+    assignStudentsToGroup = (req: Request, res: Response) => {
+        const { groupId, studentsId } = req.body;
+
+        if (!groupId || !studentsId) {
+            res.status(400).json({ error: "Falta grupo o studiantes" });
+            return;
+        }
+
+        if (!Array.isArray(studentsId)) {
+            res.status(400).json({ error: "Incorrecto formato de datos" });
+            return;
+        }
+
+        const numericGroupId = Number(groupId);
+        const numericStudentIds = studentsId.map((id: string) => Number(id));
+        const hasInvalidStudentId = numericStudentIds.some((id: any) => isNaN(id) || !Number.isInteger(id));
+
+        if (isNaN(numericGroupId) || hasInvalidStudentId) {
+            res.status(400).json({ error: "Grupo o ids de estudiantes no validos" });
+            return;
+        }
+
+        this.adminRepository.assignStudentsToGroup(numericGroupId, numericStudentIds)
+            .then(() => res.sendStatus(204))
+            .catch((error) => HttpErrorHandler.handleError(error, res));
+    }
+
+
     unlinkGuardianFromStudent = (req: Request, res: Response) => {
         const { studentId, guardianId } = req.body;
         const numericStudentId = Number(studentId);
