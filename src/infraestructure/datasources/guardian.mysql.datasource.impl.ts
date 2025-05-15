@@ -80,7 +80,7 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
         }
     }
 
-    async addHomeLocation(studentId: number, lat: number, lng: number, guardianId: number): Promise<void> {
+    async getDeviceId(studentId: number, guardianId: number): Promise<string> {
         const pool = await MysqlDatabase.getPoolInstance();
         try {
             // Check if the guardian has access to the student
@@ -98,46 +98,19 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
 
             if (!studentExists) throw HttpError.forbidden("El estudiante a editar no existe");
 
-            await pool.execute(`
-                INSERT INTO HomeCoordinates (studentId, latitude, longitude)
-                VALUES (?, ?, ?)
-            `, [studentId, lat, lng]);
+
+
+            const [rows]: [any[], any] = await pool.query(`
+                SELECT deviceId
+                FROM Student
+                WHERE studentId = ?;
+            `, [studentId]);
+
+            if (rows.length === 0) throw HttpError.notFound("El estudiante no existe");
+
+            return rows[0].deviceId;
 
         } catch (error: any) {
-            this.logger.error(`${error.code} ${error}`);
-            throw HttpError.internalServerError();
-        }
-    }
-
-    async updateHomeLocation(locationId: number, lat: number, lng: number, guardianId: number): Promise<void> {
-        const pool = await MysqlDatabase.getPoolInstance();
-
-        // Validate if user has access to given locationId
-        try {
-            const [ids]: [any[], any] = await pool.query(`SELECT homeId from Student 
-                NATURAL JOIN HomeCoordinates 
-                INNER JOIN Guardian on Guardian.studentId = Student.studentId 
-                INNER JOIN User ON User.userId = Guardian.userId 
-                WHERE User.userId = ?;`, [guardianId])
-
-            if (ids.length === 0) throw HttpError.forbidden("El tutor no tiene estudiantes registrados");
-
-            // Check if the locationId is in the list of ids
-            // If the locationId is not in the list, throw an error
-            const locationExists = ids.some((location: any) => location.homeId === locationId);
-            if (!locationExists) throw HttpError.forbidden("La ubicacion a editar no existe");
-
-            // Update the location
-            await pool.query(`
-                UPDATE HomeCoordinates
-                SET latitude = ?, longitude = ?
-                WHERE homeId = ?;
-            `, [lat, lng, locationId]);
-
-        } catch (error: any) {
-
-            if (error instanceof HttpError) throw error;
-
             this.logger.error(`${error.code} ${error}`);
             throw HttpError.internalServerError();
         }

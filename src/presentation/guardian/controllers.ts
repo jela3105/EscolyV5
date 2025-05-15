@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { HttpErrorHandler } from "../errors-handler/http-errors-handler";
 import { GuardianRepository } from "../../domain/repositories/guardian.repository";
+import { RegisterHomeLocation } from "../../domain/use-cases/guardian/register-home-location.user-case";
 
 export class GuardianController {
 
@@ -48,9 +49,10 @@ export class GuardianController {
     }
 
     addHomeLocation = async (req: Request, res: Response) => {
-        const { studentId, lat, lng } = req.body;
+        //TODO: Create DTO
+        const { studentId, lat, lng, radius, houseName } = req.body;
 
-        if (!studentId || !lat || !lng) {
+        if (!studentId || !lat || !lng || !radius || !houseName) {
             res.status(400).json({ error: "Faltan datos" });
             return;
         }
@@ -63,27 +65,9 @@ export class GuardianController {
             return;
         }
 
-        this.guardianRepository.addHomeLocation(studentIdNumber, lat, lng, req.body.payload.id)
+        new RegisterHomeLocation(this.guardianRepository)
+            .execute(studentIdNumber, lat, lng, req.body.payload.id, houseName, radius)
             .then(() => { res.status(200).json({ message: "Ubicacion actualizada" }); })
             .catch((error) => HttpErrorHandler.handleError(error, res));
     }
-
-    updateHomeLocation = async (req: Request, res: Response) => {
-        //TODO: validate if they are actual coordinates
-        const { lat, lng } = req.body;
-
-        const { locationId } = req.params;
-
-        const locationIdNumber = parseInt(locationId);
-
-        if (!lat || !lng) {
-            res.status(400).json({ error: "Faltan datos" });
-            return;
-        }
-
-        this.guardianRepository.updateHomeLocation(locationIdNumber, lat, lng, req.body.payload.id)
-            .then(() => { res.status(200).json({ message: "Ubicacion actualizada" }); })
-            .catch((error) => HttpErrorHandler.handleError(error, res));
-    }
-
 }
