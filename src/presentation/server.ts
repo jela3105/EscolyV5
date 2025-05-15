@@ -5,6 +5,7 @@ import cors from "cors";
 import path from "path";
 import { SocketService } from "../infraestructure/services/socket.service";
 import { initializeSocketEventHandler, SocketEventHandler } from "../infraestructure/websocket/socket-event-handler";
+import { LocationWatcherService } from "../infraestructure/services/location-watcher.service";
 
 interface Options {
   port: number;
@@ -63,7 +64,10 @@ export class Server {
     //Socket
     const io = SocketService.init(this.httpServer);
     const socketEventHandler = initializeSocketEventHandler(io);
+    const firebaseLocationWatcher = new LocationWatcherService(io);
+    firebaseLocationWatcher.startWatching();
     socketEventHandler.registerEvents();
+
 
     this.httpServer.listen(this.port, () => {
       buildLogger("Server").log(`Server started on port ${this.port}`);

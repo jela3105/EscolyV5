@@ -13,5 +13,7 @@ export const envs = {
   MAILER_EMAIL: get("MAILER_EMAIL").required().asEmailString(),
   MAILER_SERVICE: get("MAILER_SERVICE").required().asString(),
   MAILER_SECRET_KEY: get("MAILER_SECRET_KEY").required().asString(),
-  WEB_SERVICE_URL: get("WEB_SERVICE_URL").required().asString()
+  WEB_SERVICE_URL: get("WEB_SERVICE_URL").required().asString(),
+  FIREBASE_CREDENTIAL: get("FIREBASE_CREDENTIAL").required().asString(),
+  FIREBASE_REALTIME_DATABASE_URL: get("FIREBASE_REALTIME_DATABASE_URL").required().asString(),
 };

@@ -44,44 +44,6 @@ export class AuthRoutes {
     router.post("/recover-password/:token", [AuthMiddleware.validateURLJWT], AuthRoutes.authController.recoverPassword);
     router.put("/change-password", [AuthMiddleware.validateJWT], AuthRoutes.authController.changePassword);
 
-    router.post("/location", (req, res) => {
-      const { deviceId, latitude, longitude } = req.body;
-
-      if (!deviceId || !latitude || !longitude) {
-        res.status(400).json({ error: "need paramethers" });
-        return;
-      }
-
-      try {
-
-        const io = SocketService.getIO();
-        const socketEventHandler = getSocketEventHandler();
-
-        if (!socketEventHandler) {
-          res.status(500).json({ error: "Socket not initialized" });
-          return;
-        }
-
-        const socketId = socketEventHandler.rooms.get(deviceId);
-
-        if (!socketId) {
-          res.status(404).json({ error: "Socket not found" });
-          return;
-        }
-
-        io.to(socketId).emit("location-update", {
-          deviceId: deviceId,
-          lat: latitude,
-          lng: longitude,
-        });
-
-        res.status(200).json({ message: "Ubicación enviada por socket" });
-      } catch (err) {
-        console.error("Error al emitir ubicación:", err);
-        res.status(500).json({ error: "Socket not initialized" });
-      }
-    });
-
     AuthRoutes.router = router;
 
   }
