@@ -4,9 +4,9 @@ abstract class ShowGroupsUseCase {
     abstract execute(): Promise<any>;
 }
 
-interface Group{
+interface Group {
     id: number;
-    teacher: string;
+    teacher: number;
     year: number;
     name: string;
 }
@@ -20,12 +20,12 @@ export class ShowGroups implements ShowGroupsUseCase {
     async execute(): Promise<Group[]> {
         const groups = await this.adminRepository.getGroups();
         return groups.map((group) => {
-                return {
-                    id: group.groupId,
-                    teacher: group.teacher,
-                    year: group.year,
-                    name: group.name,
-                }
-            })
+            return {
+                id: group.groupId,
+                teacher: group.teacher,
+                year: group.year,
+                name: group.name,
+            }
+        })
     }
 }

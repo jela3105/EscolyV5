@@ -11,6 +11,7 @@ export class RegisterGroupDTO {
 
         if (!year) return ["Missing year"];
         if (!name) return ["Missing name"]
+        if (year < 1 || year > 6) return ["Year must be between 1 and 6"];
 
         return [
             undefined,

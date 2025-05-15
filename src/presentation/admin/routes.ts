@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AdminDatasourceImpl } from "../../infraestructure/datasources/admin.mysql.datasource.implementation";
+import { AdminDatasourceImpl } from "../../infraestructure/datasources/admin.mysql.datasource.impl";
 import { AdminRepositoryImpl } from "../../infraestructure";
 import { AdminController } from "./controller";
 import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";
@@ -36,19 +36,30 @@ export class AdminRoutes {
     router.get("/guardians", AdminRoutes.adminController.getGuardians);
     router.post("/guardian/register", AdminRoutes.adminController.registerGuardian);
 
+    router.get("/group/:id", AdminRoutes.adminController.getGroupDescription)
     router.get("/groups", AdminRoutes.adminController.getGroups);
     router.post("/groups/register", AdminRoutes.adminController.registerGroup);
 
     router.post("/register", AdminRoutes.adminController.registerAdmin);
 
+    router.post("/school", AdminRoutes.adminController.addSchoolZone);
+
     router.post("/students/register", AdminRoutes.adminController.registerStudent);
+    router.put("/student/:id", AdminRoutes.adminController.updateStudent);
+    router.patch("/student/link-guardian", AdminRoutes.adminController.linkGuardianToStudent);
+    router.post("/students/assign-group", AdminRoutes.adminController.assignStudentsToGroup);
+    router.get("/student/:id", AdminRoutes.adminController.getStudentInfo)
+    router.get("/students/unassgined", AdminRoutes.adminController.getStudentsWithoutGroup);
+    router.delete("/student/unlink-guardian", AdminRoutes.adminController.unlinkGuardianFromStudent);
 
     router.get("/teachers", AdminRoutes.adminController.getTeachers);
     router.post("/teachers/register", AdminRoutes.adminController.registerTeacher);
+    router.post("/teacher/assign-group", AdminRoutes.adminController.assignTeacherToGroup);
+
+    router.put("/users/:id", AdminRoutes.adminController.updateUser);
 
     AdminRoutes.router = router;
   }
-
   static get routes(): Router {
     if (!AdminRoutes.router) {
       throw new Error("AdminRoutes not initialized. Call AuthRoutes.initialize() first")

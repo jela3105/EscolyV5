@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { buildLogger, JwtAdapter } from "../../config";
 import { MysqlDatabase } from "../../data/mysql";
-import { UserEntityMapper } from "../../infraestructure";
 
 export class AuthMiddleware {
 
@@ -43,6 +42,26 @@ export class AuthMiddleware {
         });
 
       req.body.payload = payload;
+      next();
+    } catch (error) {
+      this.logger.error(`${error}`);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
+  static isGuardian: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { role } = req.body.payload;
+    try {
+
+      if (role !== 1) {
+        res.status(401).json({ error: "Unauthorized user for operation" });
+        return;
+      }
+
       next();
     } catch (error) {
       this.logger.error(`${error}`);

@@ -9,6 +9,8 @@ import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { TokenRepository } from "../../domain/repositories/token.repository";
 import { TokenService } from "../../domain/services/token/token.service";
 import { NodeMailerService } from "../../infraestructure/services/nodemailes.service";
+import { SocketService } from "../../infraestructure/services/socket.service";
+import { getSocketEventHandler } from "../../infraestructure/websocket/socket-event-handler";
 
 export class AuthRoutes {
 

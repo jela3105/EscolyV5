@@ -8,6 +8,10 @@ import { RegisterGroupDTO } from "../../domain/dtos/admin/register-group.dto";
 import { RoleEnum } from "../../domain/enums/role.enum";
 import { RegisterStudentDTO } from "../../domain/dtos/admin/register-student.dto";
 import { StudentEntity } from "../../domain/entities/student.entity";
+import { GroupDescriptionEntity } from "../../domain/entities/group-description.entity";
+import { StudentDescriptionEntity } from "../../domain/entities/student-description.entity";
+import { UpdateStudentDTO } from "../../domain/dtos/admin/update-student.dto";
+import { UpdateUserDTO } from "../../domain/dtos/admin/update-user.dto";
 
 export class AdminRepositoryImpl implements AdminRepository {
 
@@ -15,8 +19,24 @@ export class AdminRepositoryImpl implements AdminRepository {
         private readonly datasource: AdminDataSource
     ) { }
 
+    assignStudentsToGroup(groupId: number, studentIds: number[]): Promise<void> {
+        return this.datasource.assignStudentsToGroup(groupId, studentIds);
+    }
+
+    assignTeacherToGroup(groupId: number, teacherId: number): Promise<void> {
+        return this.datasource.assignTeacherToGroup(groupId, teacherId);
+    }
+
     registerStudent(registerStudentDTO: RegisterStudentDTO): Promise<StudentEntity> {
         return this.datasource.registerStudent(registerStudentDTO);
+    }
+
+    unlinkGuardiansFromStudent(studentId: number, guardianId: number): Promise<void> {
+        return this.datasource.unlinkGuardiansFromStudent(studentId, guardianId);
+    }
+
+    updateStudent(id: number, updateStudentDTO: UpdateStudentDTO): Promise<void> {
+        return this.datasource.updateStudent(id, updateStudentDTO);
     }
 
     getUsers(role: RoleEnum): Promise<UserEntity[]> {
@@ -31,7 +51,27 @@ export class AdminRepositoryImpl implements AdminRepository {
         return this.datasource.getGroups();
     }
 
+    getGroupById(id: number): Promise<GroupDescriptionEntity> {
+        return this.datasource.getGroupById(id);
+    }
+
+    linkGuardianToStudent(studentId: number, guardianId: number): Promise<void> {
+        return this.datasource.linkGuardianToStudent(studentId, guardianId);
+    }
+
     registerGroup(registerGroupDTO: RegisterGroupDTO): Promise<void> {
         return this.datasource.registerGroup(registerGroupDTO);
+    }
+
+    getStudentInfoById(id: number): Promise<StudentDescriptionEntity> {
+        return this.datasource.getStudentById(id);
+    }
+
+    getStudentsWithoutGroup(): Promise<StudentEntity[]> {
+        return this.datasource.getStudentsWithoutGroup();
+    }
+
+    updateUser(id: number, updateUserDTO: UpdateUserDTO): Promise<UserEntity> {
+        return this.datasource.updateUser(id, updateUserDTO);
     }
 }

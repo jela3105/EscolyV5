@@ -7,6 +7,7 @@ interface UserToken {
     token: string;
     user: {
         id: number;
+        name: string;
         email: string;
         role: RoleEnum;
     }
@@ -38,6 +39,7 @@ export class LoginUser implements LoginUserUseCase {
             token: token,
             user: {
                 id: user.userId,
+                name: user.names + " " + user.fathersLastName + " " + user.mothersLastName,
                 email: user.email,
                 role: user.roleId
             }
