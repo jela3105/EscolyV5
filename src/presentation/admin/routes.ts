@@ -42,6 +42,8 @@ export class AdminRoutes {
 
     router.post("/register", AdminRoutes.adminController.registerAdmin);
 
+    router.post("/school", AdminRoutes.adminController.addSchoolZone);
+
     router.post("/students/register", AdminRoutes.adminController.registerStudent);
     router.put("/student/:id", AdminRoutes.adminController.updateStudent);
     router.patch("/student/link-guardian", AdminRoutes.adminController.linkGuardianToStudent);

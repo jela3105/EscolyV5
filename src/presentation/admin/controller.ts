@@ -20,6 +20,9 @@ import { UpdateStudent } from "../../domain/use-cases/admin/update-student.user-
 import { UnlinkGuardians as UnlinkGuardian } from "../../domain/use-cases/admin/unlink-guardians.user-case";
 import { LinkGuardianToStudent } from "../../domain/use-cases/admin/link-guardian-to-student.user-case";
 
+//TODO: Implement as repository
+import { db as firebaseDatabase } from "../../infraestructure/firebase/firebase.service";
+
 export interface AdminControllerDependencies {
     adminRepository: AdminRepository,
     emailService: EmailService,
@@ -57,6 +60,32 @@ export class AdminController {
             .then(() => res.sendStatus(201))
             .catch((error) => HttpErrorHandler.handleError(error, res))
     };
+
+    addSchoolZone = async (req: Request, res: Response) => {
+        const { name, lat, lng, radius } = req.body;
+
+        if (!name || !lat || !lng || !radius) {
+            res.status(400).json({ error: "Faltan datos" });
+            return;
+        }
+
+        const numericLat = Number(lat);
+        const numericLng = Number(lng);
+        const numericRadius = Number(radius);
+
+        if (isNaN(numericLat) || isNaN(numericLng) || isNaN(numericRadius)) {
+            res.status(400).json({ error: "Datos invalidos" });
+            return;
+        }
+
+        try {
+            await firebaseDatabase.ref("safe_zones/school").set({ name, lat: numericLat, lng: numericLng, radius: numericRadius });
+            res.sendStatus(204);
+        } catch (error) {
+            console.error("Error al guardar la zona escolar");
+            res.status(500).json({ error: "Error al guardar la zona escolar" });
+        }
+    }
 
     registerGuardian = (req: Request, res: Response) => this.registerUser(req, res, RoleEnum.GUARDIAN);
 
