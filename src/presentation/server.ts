@@ -33,6 +33,8 @@ export class Server {
     const allowedOrigins = [
       //TODO: Add firebase origin
       'https://escoly.org',
+      'https://www.escoly.org',
+      'https://api.escoly.org',
     ];
 
     if (!isDev) {
