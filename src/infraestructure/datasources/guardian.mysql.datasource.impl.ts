@@ -24,8 +24,8 @@ export class GuardianDataSourceImpl implements GuardianDataSource {
                 FROM Guardian
                 INNER JOIN Student ON Student.studentId = Guardian.studentId
                 INNER JOIN User AS GuardianUser ON GuardianUser.userId = Guardian.userId
-                INNER JOIN Groupp ON Student.groupId = Groupp.groupId
-                INNER JOIN User ON User.userId = Groupp.userId
+                LEFT JOIN Groupp ON Student.groupId = Groupp.groupId
+                LEFT JOIN User ON User.userId = Groupp.userId
                 WHERE GuardianUser.userId = ?;
             `, [id]);
             return rows as any[];
