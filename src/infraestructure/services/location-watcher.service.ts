@@ -10,7 +10,7 @@ export class LocationWatcherService {
     ) { }
 
     public startWatching() {
-        const devicesRef = db.ref("dispositivos");
+        const devicesRef = db.ref("devices");
 
         devicesRef.once("value", (snapshot) => {
             snapshot.forEach((deviceSnap) => {
@@ -26,7 +26,7 @@ export class LocationWatcherService {
     }
 
     private listenToHistorial(deviceId: string) {
-        const historyRef = db.ref(`dispositivos/${deviceId}/historial_ubicacion`);
+        const historyRef = db.ref(`devices/${deviceId}/history_location`);
 
         historyRef.on("child_added", (locationSnap) => {
             const data = locationSnap.val() as LocationEntry;
@@ -39,8 +39,6 @@ export class LocationWatcherService {
             const socketId = socketEventHandler.rooms.get(deviceId);
 
             if (socketId) {
-                console.log("Enviando ubicacion a socketId: ", socketId);
-                console.log(data)
                 io.to(socketId).emit("location-update", {
                     deviceId: deviceId,
                     lat: data.latitude,
@@ -50,10 +48,6 @@ export class LocationWatcherService {
                 });
             }
 
-            this.io.emit("nueva_ubicacion", {
-                dispositivo: deviceId,
-                ubicacion: data,
-            });
         });
     }
 }
