@@ -26,7 +26,7 @@ export class LocationWatcherService {
     }
 
     private listenToHistorial(deviceId: string) {
-        const historyRef = db.ref(`devices/${deviceId}/history_location`);
+        const historyRef = db.ref(`devices/${deviceId}/location_history`);
 
         historyRef.on("child_added", (locationSnap) => {
             const data = locationSnap.val() as LocationEntry;
@@ -41,8 +41,8 @@ export class LocationWatcherService {
             if (socketId) {
                 io.to(socketId).emit("location-update", {
                     deviceId: deviceId,
-                    lat: data.latitude,
-                    lng: data.longitude,
+                    lat: data.lat,
+                    lng: data.lng,
                     dateTime: data.dateTime,
                     batery: data.batery,
                 });

@@ -1,6 +1,6 @@
 export interface LocationEntry {
-    latitude: number;
-    longitude: number;
+    lat: number;
+    lng: number;
     dateTime: string;
     batery: number;
 }
