@@ -21,14 +21,19 @@ export class NodeMailerService implements EmailService {
     }
 
     async sendEmail(sendMailOptions: SendMailOptions): Promise<boolean> {
-        const { from, to, subject, htmlBody } = sendMailOptions;
+        const { from, to, subject, htmlBody, attachments } = sendMailOptions;
 
         try {
             const sentInformation = await this.transporter.sendMail({
                 from,
                 to,
                 subject,
-                html: htmlBody
+                html: htmlBody,
+                attachments: attachments ? attachments.map(att => ({
+                    filename: att.filename,
+                    content: att.content,
+                    cid: att.cid
+                })) : undefined
             })
 
             return true;

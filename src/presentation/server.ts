@@ -6,6 +6,7 @@ import path from "path";
 import { SocketService } from "../infraestructure/services/socket.service";
 import { initializeSocketEventHandler, SocketEventHandler } from "../infraestructure/websocket/socket-event-handler";
 import { LocationWatcherService } from "../infraestructure/services/location-watcher.service";
+import { NodeMailerService } from "../infraestructure/services/nodemailes.service";
 
 interface Options {
   port: number;
@@ -31,7 +32,6 @@ export class Server {
     // Middleware CORS
     const isDev = process.env.NODE_ENV === 'dev';
     const allowedOrigins = [
-      //TODO: Add firebase origin
       'https://escoly.org',
       'https://www.escoly.org',
       'https://api.escoly.org',
@@ -66,7 +66,8 @@ export class Server {
     //Socket
     const io = SocketService.init(this.httpServer);
     const socketEventHandler = initializeSocketEventHandler(io);
-    const firebaseLocationWatcher = new LocationWatcherService(io);
+    const emailService = new NodeMailerService();
+    const firebaseLocationWatcher = new LocationWatcherService(emailService);
     firebaseLocationWatcher.startWatching();
     socketEventHandler.registerEvents();
 

@@ -16,4 +16,5 @@ export const envs = {
   WEB_SERVICE_URL: get("WEB_SERVICE_URL").required().asString(),
   FIREBASE_CREDENTIAL: get("FIREBASE_CREDENTIAL").required().asString(),
   FIREBASE_REALTIME_DATABASE_URL: get("FIREBASE_REALTIME_DATABASE_URL").required().asString(),
+  MAPS_API_KEY: get("MAPS_API_KEY").required().asString(),
 };

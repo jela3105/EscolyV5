@@ -10,6 +10,7 @@ interface Email {
     to: string;
     subject: string;
     htmlBody: string;
+    attachments?: { filename: string; content: Buffer; cid: string }[];
 }
 
 export class SentEmail implements SentEmailUseCase {
