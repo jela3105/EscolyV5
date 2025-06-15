@@ -63,12 +63,12 @@ export class LocationWatcherService {
     }
 
     private listenSafeZone(deviceId: string) {
-        const onSafeZoneRef = db.ref(`devices/${deviceId}`);
+        const onSafeZoneRef = db.ref(`devices/${deviceId}/in_safe_zone`);
 
-        onSafeZoneRef.on("child_changed", async (snapshot) => {
+        onSafeZoneRef.on("value", async (snapshot) => {
             const isInSafeZone = snapshot.val() as boolean;
 
-            if (isInSafeZone) {
+            if (isInSafeZone === true) {
 
                 const pool = await MysqlDatabase.getPoolInstance();
 
