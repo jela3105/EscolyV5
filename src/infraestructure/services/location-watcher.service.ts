@@ -133,6 +133,8 @@ export class LocationWatcherService {
                     inSafeZone: isInSafeZone,
                 });
             }
+
+            this.lastCoordinates.delete(deviceId);
         });
 
     }
