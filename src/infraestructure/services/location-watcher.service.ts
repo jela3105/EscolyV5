@@ -68,15 +68,17 @@ export class LocationWatcherService {
         onSafeZoneRef.on("value", async (snapshot) => {
             const isInSafeZone = snapshot.val() as boolean;
 
-            if (isInSafeZone === true) {
+            if (isInSafeZone !== true) {
+                return;
+            }
 
+            try {
                 const pool = await MysqlDatabase.getPoolInstance();
 
                 const [rows] = await pool.query(`SELECT email from User 
                                                     INNER JOIN Guardian ON User.userID = Guardian.userId 
                                                     INNER JOIN Student ON Student.studentId = Guardian.studentId 
                                                     WHERE deviceID = ?`, [deviceId]);
-
                 // Get last coordinates for this device
                 const coords = this.lastCoordinates.get(deviceId);
 
@@ -121,6 +123,12 @@ export class LocationWatcherService {
                         attachments
                     }).execute();
                 }
+
+                this.lastCoordinates.delete(deviceId);
+
+            } catch (error) {
+                console.error("Error fetching guardians:", error);
+                return;
             }
 
             if (!this.socketEventHandler) throw new Error("Socket not initialized");
@@ -134,7 +142,7 @@ export class LocationWatcherService {
                 });
             }
 
-            this.lastCoordinates.delete(deviceId);
+
         });
 
     }
